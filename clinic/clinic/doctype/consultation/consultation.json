@@ -1,0 +1,398 @@
+{
+ "allow_copy": 1,
+ "allow_import": 1,
+ "autoname": "naming_series:",
+ "creation": "2016-04-21 10:53:44.637684",
+ "doctype": "DocType",
+ "document_type": "Document",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_1",
+  "naming_series",
+  "appointment",
+  "type",
+  "patient",
+  "patient_age",
+  "patient_sex",
+  "physician",
+  "company",
+  "column_break_6",
+  "patient_name",
+  "doctor_name",
+  "visit_department",
+  "consultation_date",
+  "consultation_time",
+  "is_bill",
+  "invoice",
+  "remarks",
+  "consultation_remark",
+  "column_break_19",
+  "internal_remark",
+  "section_break_21",
+  "treatment",
+  "patient_details",
+  "patient_details_html",
+  "sb_symptoms",
+  "symptoms_select",
+  "symptoms",
+  "symptoms_in_print",
+  "physical_examination",
+  "diagnosis_select",
+  "diagnosis",
+  "diagnosis_in_print",
+  "codification",
+  "codification_table",
+  "sb_drug_prescription",
+  "drug_prescription",
+  "sb_test_prescription",
+  "test_prescription",
+  "consultation_comment",
+  "amended_from",
+  "section_break_41"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_1",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "hidden": 1,
+   "label": "Series",
+   "options": "C-",
+   "print_hide": 1,
+   "report_hide": 1
+  },
+  {
+   "fieldname": "appointment",
+   "fieldtype": "Link",
+   "ignore_user_permissions": 1,
+   "label": "Appointment",
+   "options": "Client Appointment CT",
+   "search_index": 1
+  },
+  {
+   "fieldname": "type",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "ignore_user_permissions": 1,
+   "label": "Type",
+   "no_copy": 1,
+   "options": "Appointment Type",
+   "print_hide": 1,
+   "report_hide": 1
+  },
+  {
+   "fieldname": "patient",
+   "fieldtype": "Link",
+   "ignore_user_permissions": 1,
+   "in_standard_filter": 1,
+   "label": "Client",
+   "options": "Customer",
+   "reqd": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "patient_age",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Age",
+   "print_hide": 1,
+   "report_hide": 1
+  },
+  {
+   "fieldname": "patient_sex",
+   "fieldtype": "Select",
+   "hidden": 1,
+   "label": "Gender",
+   "options": "\nMale\nFemale\nOther",
+   "print_hide": 1,
+   "report_hide": 1
+  },
+  {
+   "fieldname": "physician",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "Doctor",
+   "options": "Doctor",
+   "reqd": 1
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Company",
+   "options": "Company"
+  },
+  {
+   "fieldname": "column_break_6",
+   "fieldtype": "Column Break"
+  },
+  {
+   "columns": 1,
+   "fieldname": "patient_name",
+   "fieldtype": "Read Only",
+   "in_list_view": 1,
+   "label": "Client Name",
+   "options": "patient.customer_name"
+  },
+  {
+   "fieldname": "doctor_name",
+   "fieldtype": "Read Only",
+   "in_list_view": 1,
+   "label": "Doctor Name",
+   "options": "physician.first_name"
+  },
+  {
+   "fieldname": "visit_department",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "ignore_user_permissions": 1,
+   "label": "Department",
+   "options": "Medical Department"
+  },
+  {
+   "columns": 1,
+   "default": "Today",
+   "fieldname": "consultation_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Consultation Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "consultation_time",
+   "fieldtype": "Time",
+   "label": "Consultation Time",
+   "reqd": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "columns": 1,
+   "default": "0",
+   "fieldname": "is_bill",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Is Billed",
+   "read_only": 1
+  },
+  {
+   "fieldname": "invoice",
+   "fieldtype": "Link",
+   "label": "Invoice",
+   "no_copy": 1,
+   "options": "Sales Invoice",
+   "read_only": 1
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Section Break",
+   "label": "Remarks"
+  },
+  {
+   "fieldname": "consultation_remark",
+   "fieldtype": "Small Text",
+   "label": "Consultation Remark"
+  },
+  {
+   "fieldname": "column_break_19",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "internal_remark",
+   "fieldtype": "Small Text",
+   "label": "Internal Remark",
+   "print_hide": 1
+  },
+  {
+   "fieldname": "section_break_21",
+   "fieldtype": "Section Break",
+   "label": "Prescribe Treatment"
+  },
+  {
+   "fieldname": "treatment",
+   "fieldtype": "Table",
+   "label": "Prescribe Treatment",
+   "options": "Consultation Treatment"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "patient_details",
+   "fieldtype": "Section Break",
+   "hidden": 1,
+   "label": "Patient Details",
+   "read_only": 1
+  },
+  {
+   "fieldname": "patient_details_html",
+   "fieldtype": "HTML",
+   "print_hide": 1,
+   "report_hide": 1
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "sb_symptoms",
+   "fieldtype": "Section Break",
+   "hidden": 1,
+   "label": "Encounter Impression"
+  },
+  {
+   "fieldname": "symptoms_select",
+   "fieldtype": "Link",
+   "ignore_user_permissions": 1,
+   "label": "Complaints",
+   "no_copy": 1,
+   "options": "Complaint",
+   "print_hide": 1,
+   "report_hide": 1
+  },
+  {
+   "fieldname": "symptoms",
+   "fieldtype": "Small Text",
+   "ignore_xss_filter": 1,
+   "no_copy": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "symptoms_in_print",
+   "fieldtype": "Check",
+   "label": "In print",
+   "no_copy": 1,
+   "print_hide": 1,
+   "report_hide": 1
+  },
+  {
+   "fieldname": "physical_examination",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "diagnosis_select",
+   "fieldtype": "Link",
+   "ignore_user_permissions": 1,
+   "label": "Diagnosis",
+   "no_copy": 1,
+   "options": "Diagnosis",
+   "print_hide": 1,
+   "report_hide": 1
+  },
+  {
+   "fieldname": "diagnosis",
+   "fieldtype": "Small Text",
+   "ignore_xss_filter": 1,
+   "no_copy": 1
+  },
+  {
+   "default": "1",
+   "fieldname": "diagnosis_in_print",
+   "fieldtype": "Check",
+   "label": "In print",
+   "no_copy": 1,
+   "print_hide": 1,
+   "report_hide": 1
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "codification",
+   "fieldtype": "Section Break",
+   "hidden": 1,
+   "label": "Medical Coding"
+  },
+  {
+   "fieldname": "codification_table",
+   "fieldtype": "Table",
+   "label": "Medical Coding",
+   "options": "Codification Table"
+  },
+  {
+   "fieldname": "sb_drug_prescription",
+   "fieldtype": "Section Break",
+   "hidden": 1,
+   "label": "Drug Prescription"
+  },
+  {
+   "fieldname": "drug_prescription",
+   "fieldtype": "Table",
+   "label": "Drug Prescription",
+   "options": "Drug Prescription"
+  },
+  {
+   "fieldname": "sb_test_prescription",
+   "fieldtype": "Section Break",
+   "hidden": 1,
+   "label": "Investigations"
+  },
+  {
+   "fieldname": "test_prescription",
+   "fieldtype": "Table",
+   "label": "Investigations",
+   "options": "Lab Prescription"
+  },
+  {
+   "fieldname": "consultation_comment",
+   "fieldtype": "Small Text",
+   "ignore_xss_filter": 1,
+   "label": "Review Details",
+   "no_copy": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Consultation",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_41",
+   "fieldtype": "Section Break"
+  }
+ ],
+ "is_submittable": 1,
+ "modified": "2020-07-18 19:10:15.290252",
+ "modified_by": "Administrator",
+ "module": "Clinic",
+ "name": "Consultation",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Physician",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "search_fields": "patient, physician, visit_department",
+ "show_name_in_global_search": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "title_field": "doctor_name",
+ "track_changes": 1,
+ "track_seen": 1
+}

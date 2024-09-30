@@ -1,0 +1,46 @@
+[
+ {
+  "docstatus": 0,
+  "doctype": "Custom Script",
+  "dt": "Customer",
+  "modified": "2018-12-06 17:13:03.433914",
+  "name": "Customer-Client",
+  "parent": null,
+  "parentfield": null,
+  "parenttype": null,
+  "script": "frappe.ui.form.on(\"Customer\", {\nrefresh: function(frm) {\nfrm.toggle_display(['contact_html','primary_contact_detail']);\nfrm.toggle_display(['address_html'], !frm.doc.__islocal);\n\n\n}\n\n})"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Custom Script",
+  "dt": "Consultation",
+  "modified": "2018-12-20 11:26:11.892637",
+  "name": "Consultation-Client",
+  "parent": null,
+  "parentfield": null,
+  "parenttype": null,
+  "script": "frappe.ui.form.on('Consultation', {\n\tonload: function(frm) {\n\t\tvar df = frappe.meta.get_docfield(\"Consultation Treatment\", \"assigned_to\", frm.doc.name);\n\t\t\n\t\tdf.formatter = function(value, df, options, doc) {\n\t\treturn value? value + ': ' + doc.doctor_name: doc.doctor_name;\n\t\n\t\t}\t\t\t\n\t}\n})"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Custom Script",
+  "dt": "Client Treatment",
+  "modified": "2018-12-20 11:27:00.640560",
+  "name": "Client Treatment-Client",
+  "parent": null,
+  "parentfield": null,
+  "parenttype": null,
+  "script": "frappe.ui.form.on(\"Client Treatment\", \"on_submit\", function(frm,cdt,cdn) {\n\tvar treatment=locals[cdt][cdn];\n\tif(treatment.status=\"Completed\"){\n\tconsole.log(\"Change\");\n\tfrm.refresh_field('status');\n\tsetTimeout(function(){\n\tcur_frm.reload_doc();\n\n\t},2000)\n\t}\n\n})\n"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Custom Script",
+  "dt": "Client Appointment CT",
+  "modified": "2020-07-23 16:16:15.533203",
+  "name": "Patient Appointment-Client",
+  "parent": null,
+  "parentfield": null,
+  "parenttype": null,
+  "script": "cur_frm.add_fetch(\"physician\", \"department\", \"clinic\")\nfrappe.ui.form.on(\"Client Appointment CT\", \"refresh\", function(frm) {\ncur_frm.set_df_property(\"clinic\", \"read_only\",1);\nfrm.fields_dict.food_allergy.grid.wrapper.find('.grid-add-row').addClass('hide');\nfrm.fields_dict.drug_allergy.grid.wrapper.find('.grid-add-row').addClass('hide'); frm.fields_dict.current_diseases.grid.wrapper.find('.grid-add-row').addClass('hide');\nfrm.fields_dict.drug_used_recently.grid.wrapper.find('.grid-add-row').addClass('hide');\n\nvar df_drug_allergy=frappe.meta.get_docfield(\"Customer Drug Allergy\",\"drug_allergy\",cur_frm.doc.name);\nvar df_food_allergy=frappe.meta.get_docfield(\"Customer Food Allergy\",\"food_allergy\",cur_frm.doc.name);\nvar df_diseases=frappe.meta.get_docfield(\"Current Diseases\",\"diseases\",cur_frm.doc.name);\nvar df_drug=frappe.meta.get_docfield(\"Drugs Used Recently\",\"drug\",cur_frm.doc.name);\ndf_drug_allergy.read_only = 1;\ndf_food_allergy.read_only = 1;\ndf_diseases.read_only = 1;\ndf_drug.read_only = 1;\n\n\n})\n\nfrappe.ui.form.on(\"Client Appointment CT\", \"client\", function(frm) {\n\tif(frm.doc.client){\n\t\tcur_frm.clear_table(\"drug_allergy\");\n\t\tcur_frm.clear_table(\"food_allergy\");\n\t\tcur_frm.clear_table(\"current_diseases\");\n\t\tcur_frm.clear_table(\"drug_used_recently\");\n\t\tfrappe.call({\n\t\t\t\"method\": \"frappe.client.get\",\n\t\t\targs: {\n\t\t\t\tdoctype: \"Customer\",\n\t\t\t\tname: frm.doc.client\n\t\t\t},\n\t\t\tcallback: function (r) {\n\t\t\t\tif(r.message){\n                   \t\t\t for (var row_drug in r.message.drug_allergy) {\n                        \t\t\tvar child_drug_allergy = frm.add_child(\"drug_allergy\");\n\n                        \t\t\tfrappe.model.set_value(child_drug_allergy.doctype, child_drug_allergy.name, \"drug_allergy\", r.message.drug_allergy[row_drug].drug_allergy);\n                     \t\t\t\t   refresh_field(\"drug_allergy\");\n                 \t\t\t   }\n\n                   \t\t\t for (var row_food in r.message.food_allergy) {\n                        \t\t\tvar child_food_allergy = frm.add_child(\"food_allergy\");\n\n                        \t\t\tfrappe.model.set_value(child_food_allergy.doctype, child_food_allergy.name, \"food_allergy\", r.message.food_allergy[row_food].food_allergy);\n                     \t\t\t\t   refresh_field(\"food_allergy\");\n                 \t\t\t   }\n\n                   \t\t\t for (var row_diseases in r.message.current_diseases) {\n                        \t\t\tvar child_current_diseases = frm.add_child(\"current_diseases\");\n\n                        \t\t\tfrappe.model.set_value(child_current_diseases.doctype, child_current_diseases.name, \"diseases\", r.message.current_diseases[row_diseases].diseases);\n                     \t\t\t\t   refresh_field(\"current_diseases\");\n                 \t\t\t   }\n\n                   \t\t\t for (var row_drug in r.message.drug_used_recently) {\n                        \t\t\tvar child_drug = frm.add_child(\"drug_used_recently\");\n\n                        \t\t\tfrappe.model.set_value(child_drug.doctype, child_drug.name, \"drug\", r.message.drug_used_recently[row_drug].drug);\n                     \t\t\t\t   refresh_field(\"drug_used_recently\");\n                 \t\t\t   }\n\n\n\n\n\t\t\t\t\t}\n\t\t\t}\n\t\t});\n\t}\n\n})"
+ }
+]

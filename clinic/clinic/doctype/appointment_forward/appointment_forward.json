@@ -1,0 +1,132 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "naming_series:",
+ "creation": "2022-02-28 10:22:25.753837",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "naming_series",
+  "section_break_2",
+  "column_break_3",
+  "from_doctor",
+  "to_doctor",
+  "date",
+  "column_break_7",
+  "from_doctor_name",
+  "to_doctor_name",
+  "appointment_id",
+  "from_doctor_user",
+  "to_doctor_user"
+ ],
+ "fields": [
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "hidden": 1,
+   "label": "Series",
+   "options": "AP-FRD-.YYYY.-"
+  },
+  {
+   "fieldname": "from_doctor",
+   "fieldtype": "Link",
+   "ignore_user_permissions": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "From Doctor",
+   "options": "Doctor"
+  },
+  {
+   "fieldname": "to_doctor",
+   "fieldtype": "Link",
+   "ignore_user_permissions": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "To Doctor",
+   "options": "Doctor"
+  },
+  {
+   "fieldname": "date",
+   "fieldtype": "Datetime",
+   "in_standard_filter": 1,
+   "label": "Date"
+  },
+  {
+   "fieldname": "appointment_id",
+   "fieldtype": "Link",
+   "label": "Appointment ID",
+   "options": "Client Appointment CT"
+  },
+  {
+   "fetch_from": "from_doctor.first_name",
+   "fieldname": "from_doctor_name",
+   "fieldtype": "Data",
+   "label": "From Doctor Name"
+  },
+  {
+   "fetch_from": "to_doctor.first_name",
+   "fieldname": "to_doctor_name",
+   "fieldtype": "Data",
+   "label": "To Doctor Name"
+  },
+  {
+   "fieldname": "section_break_2",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_7",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "from_doctor.user_id",
+   "fieldname": "from_doctor_user",
+   "fieldtype": "Link",
+   "label": "From Doctor User ",
+   "options": "User"
+  },
+  {
+   "fetch_from": "to_doctor.user_id",
+   "fieldname": "to_doctor_user",
+   "fieldtype": "Link",
+   "label": "To Doctor User",
+   "options": "User"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-08-22 11:27:18.873144",
+ "modified_by": "Administrator",
+ "module": "Clinic",
+ "name": "Appointment Forward",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Doctor",
+   "share": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC"
+}

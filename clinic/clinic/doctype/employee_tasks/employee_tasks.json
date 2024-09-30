@@ -1,0 +1,118 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "naming_series:",
+ "creation": "2024-02-28 21:16:32.701857",
+ "doctype": "DocType",
+ "document_type": "Document",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "naming_series",
+  "assigned_to",
+  "assigned_by",
+  "task",
+  "section_break_5",
+  "status",
+  "from_date",
+  "to_date",
+  "column_break_7",
+  "priority",
+  "cost_section",
+  "budget"
+ ],
+ "fields": [
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Naming Series",
+   "options": "ET-.######"
+  },
+  {
+   "fieldname": "assigned_to",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Assigned To",
+   "options": "User",
+   "reqd": 1
+  },
+  {
+   "fieldname": "assigned_by",
+   "fieldtype": "Link",
+   "label": "Assigned by",
+   "options": "User",
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "task",
+   "fieldtype": "Text",
+   "label": "task",
+   "reqd": 1
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "On Hold\nDone\nWorking on it\nStuck\nfuture steps"
+  },
+  {
+   "fieldname": "priority",
+   "fieldtype": "Select",
+   "label": "priority ",
+   "options": "Medium\nCritical\nHigh\nLow"
+  },
+  {
+   "fieldname": "from_date",
+   "fieldtype": "Date",
+   "label": "From Date"
+  },
+  {
+   "fieldname": "to_date",
+   "fieldtype": "Date",
+   "label": "To Date"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "cost_section",
+   "fieldtype": "Section Break",
+   "label": "cost"
+  },
+  {
+   "fieldname": "budget",
+   "fieldtype": "Currency",
+   "label": "Budget"
+  },
+  {
+   "fieldname": "section_break_5",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_7",
+   "fieldtype": "Column Break"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-03-06 04:14:34.510309",
+ "modified_by": "Administrator",
+ "module": "Clinic",
+ "name": "Employee Tasks",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "search_fields": "from_date, to_date",
+ "sort_field": "modified",
+ "sort_order": "DESC"
+}

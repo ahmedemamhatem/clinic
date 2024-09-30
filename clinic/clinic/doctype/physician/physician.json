@@ -1,0 +1,255 @@
+{
+ "allow_copy": 1,
+ "allow_import": 1,
+ "allow_rename": 1,
+ "beta": 1,
+ "creation": "2016-02-23 11:20:53.565119",
+ "doctype": "DocType",
+ "document_type": "Setup",
+ "engine": "InnoDB",
+ "field_order": [
+  "first_name",
+  "middle_name",
+  "last_name",
+  "image",
+  "employee",
+  "user_id",
+  "designation",
+  "department",
+  "column_break_7",
+  "hospital",
+  "mobile_phone",
+  "residence_phone",
+  "office_phone",
+  "appointments",
+  "physician_schedule",
+  "column_break_17",
+  "time_per_appointment",
+  "charges",
+  "op_consulting_charge",
+  "contacts_and_address",
+  "address_html",
+  "column_break_19",
+  "contact_html",
+  "account_details",
+  "accounts",
+  "default_currency"
+ ],
+ "fields": [
+  {
+   "fieldname": "first_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "First Name",
+   "reqd": 1
+  },
+  {
+   "fieldname": "middle_name",
+   "fieldtype": "Data",
+   "label": "Middle Name (Optional)"
+  },
+  {
+   "fieldname": "last_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Last Name"
+  },
+  {
+   "fieldname": "image",
+   "fieldtype": "Attach Image",
+   "hidden": 1,
+   "label": "Image",
+   "no_copy": 1,
+   "print_hide": 1
+  },
+  {
+   "fieldname": "employee",
+   "fieldtype": "Link",
+   "label": "Employee",
+   "options": "Employee",
+   "read_only": 1
+  },
+  {
+   "fieldname": "user_id",
+   "fieldtype": "Link",
+   "label": "User",
+   "options": "User"
+  },
+  {
+   "fieldname": "designation",
+   "fieldtype": "Link",
+   "ignore_user_permissions": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Designation",
+   "options": "Designation"
+  },
+  {
+   "fieldname": "department",
+   "fieldtype": "Link",
+   "ignore_user_permissions": 1,
+   "in_standard_filter": 1,
+   "label": "Department",
+   "options": "Doctor Department"
+  },
+  {
+   "fieldname": "column_break_7",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "hospital",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Hospital"
+  },
+  {
+   "fieldname": "mobile_phone",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Mobile"
+  },
+  {
+   "fieldname": "residence_phone",
+   "fieldtype": "Data",
+   "label": "Phone (R)"
+  },
+  {
+   "fieldname": "office_phone",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Phone (Office)"
+  },
+  {
+   "fieldname": "appointments",
+   "fieldtype": "Section Break",
+   "label": "Appointments"
+  },
+  {
+   "bold": 1,
+   "fieldname": "physician_schedule",
+   "fieldtype": "Link",
+   "ignore_user_permissions": 1,
+   "label": "Physician Schedule",
+   "options": "Physician Schedule CT"
+  },
+  {
+   "fieldname": "column_break_17",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "In minutes",
+   "fieldname": "time_per_appointment",
+   "fieldtype": "Data",
+   "label": "Time per Appointment"
+  },
+  {
+   "fieldname": "charges",
+   "fieldtype": "Section Break",
+   "label": "Charges"
+  },
+  {
+   "fieldname": "op_consulting_charge",
+   "fieldtype": "Currency",
+   "label": "OP Consulting Charge",
+   "options": "Currency"
+  },
+  {
+   "fieldname": "contacts_and_address",
+   "fieldtype": "Section Break",
+   "hidden": 1,
+   "label": "Contacts and Address"
+  },
+  {
+   "fieldname": "address_html",
+   "fieldtype": "HTML",
+   "label": "Address HTML",
+   "no_copy": 1,
+   "print_hide": 1,
+   "report_hide": 1
+  },
+  {
+   "fieldname": "column_break_19",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "contact_html",
+   "fieldtype": "HTML",
+   "label": "Contact HTML",
+   "no_copy": 1,
+   "print_hide": 1,
+   "report_hide": 1
+  },
+  {
+   "fieldname": "account_details",
+   "fieldtype": "Section Break",
+   "hidden": 1,
+   "label": "Account Details"
+  },
+  {
+   "fieldname": "accounts",
+   "fieldtype": "Table",
+   "label": "Income Account",
+   "options": "Party Account"
+  },
+  {
+   "fieldname": "default_currency",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Default Currency",
+   "no_copy": 1,
+   "options": "Currency",
+   "print_hide": 1,
+   "report_hide": 1
+  }
+ ],
+ "image_field": "image",
+ "modified": "2020-07-22 21:30:15.143531",
+ "modified_by": "Administrator",
+ "module": "Clinic",
+ "name": "Physician",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Laboratory User",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Physician",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Nursing User",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "restrict_to_domain": "Healthcare",
+ "search_fields": "first_name,mobile_phone,office_phone",
+ "show_name_in_global_search": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "title_field": "first_name",
+ "track_changes": 1
+}

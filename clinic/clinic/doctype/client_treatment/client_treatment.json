@@ -1,0 +1,195 @@
+{
+ "autoname": "naming_series:",
+ "creation": "2018-12-12 03:15:01.945317",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "naming_series",
+  "appointment",
+  "client",
+  "doctor",
+  "medical_assistant",
+  "medical_assistant_name",
+  "status",
+  "column_break_7",
+  "date_time",
+  "client_name",
+  "doctor_name",
+  "treatment",
+  "clinic_name",
+  "qty",
+  "remarks",
+  "amended_from",
+  "more_information",
+  "consulatation",
+  "consulatation_treatment",
+  "is_bill"
+ ],
+ "fields": [
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Naming Series",
+   "options": "CT-.YY.MM.DD.-.###"
+  },
+  {
+   "fieldname": "appointment",
+   "fieldtype": "Link",
+   "label": "Appointment",
+   "options": "Client Appointment CT",
+   "read_only": 1
+  },
+  {
+   "fieldname": "client",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "Client",
+   "options": "Customer",
+   "read_only": 1
+  },
+  {
+   "fieldname": "doctor",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "Doctor",
+   "options": "Doctor",
+   "read_only": 1
+  },
+  {
+   "fieldname": "medical_assistant",
+   "fieldtype": "Link",
+   "label": "Medical Assistant",
+   "options": "Doctor",
+   "read_only": 1
+  },
+  {
+   "fieldname": "medical_assistant_name",
+   "fieldtype": "Read Only",
+   "label": "Medical Assistant Name",
+   "options": "medical_assistant.first_name"
+  },
+  {
+   "columns": 1,
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Status",
+   "options": "\nDraft\nSubmitted\nPending\nCompleted\nBilled",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_7",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "date_time",
+   "fieldtype": "Datetime",
+   "in_standard_filter": 1,
+   "label": "Date Time"
+  },
+  {
+   "columns": 1,
+   "fieldname": "client_name",
+   "fieldtype": "Read Only",
+   "in_list_view": 1,
+   "label": "Client Name",
+   "options": "client.customer_name"
+  },
+  {
+   "columns": 1,
+   "fieldname": "doctor_name",
+   "fieldtype": "Read Only",
+   "in_list_view": 1,
+   "label": "Doctor Name",
+   "options": "doctor.first_name"
+  },
+  {
+   "columns": 2,
+   "fieldname": "treatment",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Treatment",
+   "options": "Item",
+   "read_only": 1
+  },
+  {
+   "fieldname": "clinic_name",
+   "fieldtype": "Read Only",
+   "label": "Clinic Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "qty",
+   "fieldtype": "Data",
+   "label": "Qty"
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "label": "Remarks"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Client Treatment",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "more_information",
+   "fieldtype": "Section Break",
+   "label": "More Information"
+  },
+  {
+   "fieldname": "consulatation",
+   "fieldtype": "Read Only",
+   "label": "Consultation",
+   "read_only": 1
+  },
+  {
+   "fieldname": "consulatation_treatment",
+   "fieldtype": "Link",
+   "label": "Consultation Treatment",
+   "options": "Consultation Treatment",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "is_bill",
+   "fieldtype": "Check",
+   "label": "Is Billed",
+   "read_only": 1
+  }
+ ],
+ "is_submittable": 1,
+ "modified": "2020-07-18 19:10:12.020001",
+ "modified_by": "Administrator",
+ "module": "Clinic",
+ "name": "Client Treatment",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "title_field": "treatment",
+ "track_changes": 1
+}

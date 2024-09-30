@@ -1,0 +1,462 @@
+{
+ "actions": [],
+ "allow_copy": 1,
+ "allow_import": 1,
+ "autoname": "naming_series:",
+ "creation": "2017-05-04 11:52:40.941507",
+ "doctype": "DocType",
+ "document_type": "Document",
+ "engine": "InnoDB",
+ "field_order": [
+  "naming_series",
+  "client",
+  "physician",
+  "nurse",
+  "appointment_date",
+  "check_availability",
+  "column_break_1",
+  "duration",
+  "patient_name",
+  "english_name",
+  "gender",
+  "service_group",
+  "service",
+  "doctor_name",
+  "patient_age",
+  "status",
+  "bill_status",
+  "clinic",
+  "appointment_type",
+  "section_break_12",
+  "vital_signs",
+  "section_break_1",
+  "appointment_time",
+  "column_break_17",
+  "appointment_datetime",
+  "column_break_2",
+  "department",
+  "sales_invoice",
+  "company",
+  "allergy",
+  "food_allergy",
+  "drug_allergy",
+  "diseases",
+  "current_diseases",
+  "drugs_used_recently",
+  "drug_used_recently",
+  "females",
+  "is_pregnant",
+  "has_tanned",
+  "column_break_31",
+  "has_exfoliation",
+  "has_done_moroccan_bath_spa",
+  "section_break_3",
+  "notes",
+  "referring_physician",
+  "reminded",
+  "from_doctor",
+  "to_doctor",
+  "first_doctor"
+ ],
+ "fields": [
+  {
+   "columns": 1,
+   "fieldname": "client",
+   "fieldtype": "Link",
+   "ignore_user_permissions": 1,
+   "in_standard_filter": 1,
+   "label": "Client",
+   "options": "Customer",
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "physician",
+   "fieldtype": "Link",
+   "ignore_user_permissions": 1,
+   "in_standard_filter": 1,
+   "label": "Doctor",
+   "options": "Doctor",
+   "reqd": 1,
+   "search_index": 1,
+   "set_only_once": 1
+  },
+  {
+   "columns": 1,
+   "fieldname": "appointment_date",
+   "fieldtype": "Date",
+   "in_standard_filter": 1,
+   "label": "Date",
+   "reqd": 1,
+   "search_index": 1,
+   "set_only_once": 1
+  },
+  {
+   "depends_on": "eval:doc.__islocal",
+   "fieldname": "check_availability",
+   "fieldtype": "Button",
+   "label": "Check availability"
+  },
+  {
+   "fieldname": "column_break_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "columns": 2,
+   "fetch_from": "client.customer_name",
+   "fieldname": "patient_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Patient Name",
+   "read_only": 1,
+   "width": "70px"
+  },
+  {
+   "fetch_from": "client.gender",
+   "fieldname": "gender",
+   "fieldtype": "Read Only",
+   "label": "Gender"
+  },
+  {
+   "columns": 1,
+   "fetch_from": "physician.first_name",
+   "fieldname": "doctor_name",
+   "fieldtype": "Read Only",
+   "in_list_view": 1,
+   "label": "Doctor Name"
+  },
+  {
+   "fieldname": "patient_age",
+   "fieldtype": "Data",
+   "label": "Patient Age",
+   "read_only": 1
+  },
+  {
+   "columns": 1,
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Status",
+   "options": "\nScheduled\nCancelled\nWaiting\nUnder Treatment\nTo Bill\nPartial Billed\nBilled\nRetouch"
+  },
+  {
+   "fetch_from": "physician.department",
+   "fieldname": "clinic",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "Clinic Name",
+   "options": "Department"
+  },
+  {
+   "fieldname": "appointment_type",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "ignore_user_permissions": 1,
+   "label": "Type",
+   "options": "Appointment Type",
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "section_break_12",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "vital_signs",
+   "fieldtype": "Table",
+   "label": "Vital Signs",
+   "options": "Vital Signs"
+  },
+  {
+   "depends_on": "eval:!doc.__islocal",
+   "fieldname": "section_break_1",
+   "fieldtype": "Section Break"
+  },
+  {
+   "columns": 1,
+   "fieldname": "appointment_time",
+   "fieldtype": "Time",
+   "in_filter": 1,
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Time",
+   "search_index": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "column_break_17",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "In Minutes",
+   "fieldname": "duration",
+   "fieldtype": "Int",
+   "label": "Duration"
+  },
+  {
+   "fieldname": "appointment_datetime",
+   "fieldtype": "Datetime",
+   "hidden": 1,
+   "label": "Date TIme",
+   "print_hide": 1,
+   "report_hide": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "column_break_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "department",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "ignore_user_permissions": 1,
+   "in_list_view": 1,
+   "label": "Department",
+   "options": "Medical Department",
+   "search_index": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "sales_invoice",
+   "fieldtype": "Link",
+   "label": "Sales Invoice",
+   "options": "Sales Invoice",
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Company",
+   "no_copy": 1,
+   "options": "Company",
+   "print_hide": 1,
+   "report_hide": 1
+  },
+  {
+   "fieldname": "allergy",
+   "fieldtype": "Section Break",
+   "label": "Allergy"
+  },
+  {
+   "fieldname": "food_allergy",
+   "fieldtype": "Table",
+   "label": "Food Allergy",
+   "options": "Customer Food Allergy"
+  },
+  {
+   "fieldname": "drug_allergy",
+   "fieldtype": "Table",
+   "label": "Drug Allergy",
+   "options": "Customer Drug Allergy"
+  },
+  {
+   "fieldname": "diseases",
+   "fieldtype": "Section Break",
+   "label": "Current Diseases"
+  },
+  {
+   "fieldname": "current_diseases",
+   "fieldtype": "Table",
+   "label": "Current Diseases",
+   "options": "Current Diseases"
+  },
+  {
+   "fieldname": "drugs_used_recently",
+   "fieldtype": "Section Break",
+   "label": "Drugs Used Recently"
+  },
+  {
+   "fieldname": "drug_used_recently",
+   "fieldtype": "Table",
+   "label": "Drugs Used Recently",
+   "options": "Drugs Used Recently"
+  },
+  {
+   "depends_on": "eval:doc.gender==\"Female\"",
+   "fieldname": "females",
+   "fieldtype": "Section Break",
+   "label": "Females"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_pregnant",
+   "fieldtype": "Check",
+   "label": "Is Pregnant",
+   "options": "client.is_pregnant",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "has_tanned",
+   "fieldtype": "Check",
+   "label": "Has Tanned",
+   "options": "client.has_tanned",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_31",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "has_exfoliation",
+   "fieldtype": "Check",
+   "label": "Has Exfoliation",
+   "options": "client.has_exfoliation",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "has_done_moroccan_bath_spa",
+   "fieldtype": "Check",
+   "label": "Has Done Moroccan Bath Spa",
+   "options": "client.has_done_moroccan_bath_spa",
+   "read_only": 1
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "section_break_3",
+   "fieldtype": "Section Break",
+   "label": "More Info"
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Small Text",
+   "ignore_xss_filter": 1,
+   "label": "Notes"
+  },
+  {
+   "fieldname": "referring_physician",
+   "fieldtype": "Link",
+   "ignore_user_permissions": 1,
+   "label": "Referring Physician",
+   "options": "Doctor",
+   "set_only_once": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "reminded",
+   "fieldtype": "Check",
+   "hidden": 1,
+   "label": "Reminded",
+   "print_hide": 1,
+   "report_hide": 1
+  },
+  {
+   "fetch_from": "client.english_name",
+   "fieldname": "english_name",
+   "fieldtype": "Data",
+   "label": "English name"
+  },
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Naming Series",
+   "options": "COP-.######"
+  },
+  {
+   "fieldname": "from_doctor",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "From Doctor",
+   "options": "Email"
+  },
+  {
+   "fetch_from": "physician",
+   "fieldname": "to_doctor",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "To Doctor",
+   "options": "Email"
+  },
+  {
+   "fieldname": "first_doctor",
+   "fieldtype": "Data",
+   "label": "First Doctor"
+  },
+  {
+   "fieldname": "bill_status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Bill Status",
+   "options": "To Bill\nPartial Billed\nBilled",
+   "read_only": 1
+  },
+  {
+   "fieldname": "service",
+   "fieldtype": "Link",
+   "label": "Service",
+   "options": "Services",
+   "reqd": 1
+  },
+  {
+   "fieldname": "nurse",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Nurse",
+   "options": "Clinic Nurse"
+  },
+  {
+   "default": "\u062e\u062f\u0645\u0627\u062a \u0627\u0644\u0627\u0633\u0646\u0627\u0646",
+   "fieldname": "service_group",
+   "fieldtype": "Select",
+   "label": "Service Group",
+   "options": "\u062e\u062f\u0645\u0627\u062a \u0627\u0644\u0627\u0633\u0646\u0627\u0646\n\u062e\u062f\u0645\u0627\u062a \u0627\u0644\u062c\u0644\u062f\u064a\u0629"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-09-24 09:58:36.806149",
+ "modified_by": "Administrator",
+ "module": "Clinic",
+ "name": "Client Appointment CT",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Healthcare Administrator",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Doctor",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "search_fields": "client, physician, appointment_datetime,department",
+ "show_name_in_global_search": 1,
+ "sort_order": "DESC",
+ "title_field": "patient_name",
+ "track_changes": 1,
+ "track_seen": 1
+}

@@ -1,0 +1,37 @@
+{
+ "add_total_row": 1,
+ "columns": [],
+ "creation": "2020-12-07 15:43:25.186613",
+ "disable_prepared_report": 0,
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [],
+ "idx": 0,
+ "is_standard": "Yes",
+ "letter_head": "\u0634\u0639\u0627\u0631 \u0641\u0648\u0627\u062a\u064a\u0631 \u0627\u0644\u0645\u0628\u064a\u0639\u0627\u062a",
+ "modified": "2024-05-05 21:56:59.059323",
+ "modified_by": "Administrator",
+ "module": "Clinic",
+ "name": "Lead Source Billing Analysis",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "query": "select\r\nlead_source as \"LeadSource:Data:250\",\r\ncount(CASE WHEN NewBilling > 0 THEN 1 END) as \"New Count:Int:100\",\r\ncount(CASE WHEN RepeatBilling > 1 THEN 1 END) as \"Repeat Count:Int:120\",\r\nsum(NewBilling) as \"New Billing:Currency:150\",\r\nsum(RepeatBilling) as \"Repeat Billing:Currency:150\"\r\nfrom\r\n(select lead_source as \"lead_source\",\r\ncount(CASE WHEN creation between %(from_date)s and %(to_date)s THEN customer END) as \"newcount\",\r\ncount(CASE WHEN creation < %(from_date)s THEN customer END) as \"repeatcount\" ,\r\nsum(NewBilling) as \"NewBilling\",\r\nsum(RepeatBilling) as \"RepeatBilling\"\r\nfrom\r\n(SELECT lead_source,\r\nsum(NewBilling) as NewBilling,\r\nsum(RepeatBilling) as RepeatBilling,\r\ncustomer_n as customer,\r\ncreation as creation\r\nfrom\r\n(\r\nSELECT \r\npv.name as 'payment:Link/Payment Entry',\r\nmini.creation as creation,\r\nc.name as customer_n,\r\nc.customer_name as customer_name,\r\nc.lead_source as Lead_Source, 0 as NewCount, \r\ncount(pv.name) as RepeatCount,\r\nsum(CASE WHEN mini.creation between %(from_date)s and %(to_date)s THEN pv.paid_amount ELSE 0 END) as NewBilling,\r\nsum(CASE WHEN mini.creation < %(from_date)s THEN pv.paid_amount ELSE 0 END) as RepeatBilling\r\nfrom `tabCustomer` c\r\nINNER JOIN `tabPayment Entry` as pv\r\non c.name= pv.party\r\nINNER JOIN\r\n(select \r\nSI.customer_name, SI.customer, MIN(SI.creation) as creation\r\nfrom `tabSales Invoice` as SI\r\ngroup by SI.customer) as mini\r\non mini.customer = c.name\r\nwhere pv.payment_type = 'Receive' and pv.posting_date between %(from_date)s and %(to_date)s\r\ngroup by c.lead_source, c.name\r\n) as P group by P.lead_source, P.customer_n\r\n\r\nUNION ALL\r\n\r\nSELECT lead_source,\r\nsum(NewBilling) as NewBilling,\r\nsum(RepeatBilling) as RepeatBilling,\r\ncustomer_n as customer,\r\ncreation as creation\r\nfrom\r\n(\r\nSELECT \r\nmini.creation as creation,\r\nsi.name as 'payment:Link/Payment Entry',\r\nc.name as customer_n,\r\nc.customer_name as customer_name,\r\nc.lead_source as Lead_Source,\r\nsum(CASE WHEN mini.creation between %(from_date)s and %(to_date)s THEN si.paid_amount ELSE 0 END) as NewBilling,\r\nsum(CASE WHEN mini.creation < %(from_date)s THEN si.paid_amount ELSE 0 END) as RepeatBilling\r\nfrom `tabCustomer` c\r\nINNER JOIN `tabSales Invoice` as si\r\non c.name= si.customer\r\nINNER JOIN\r\n(select \r\nSI.customer_name, SI.customer, MIN(SI.creation) as creation\r\nfrom `tabSales Invoice` as SI\r\ngroup by SI.customer) as mini\r\non mini.customer = c.name\r\nwhere si.posting_date between %(from_date)s and %(to_date)s\r\nand (si.status ='Paid' or si.status ='Overdue' or si.status = 'Partly Paid')\r\ngroup by c.lead_source, c.name\r\n) as S group by S.lead_source, S.customer_n ) as final_group group by final_group.lead_source , final_group.customer ) as FG group by FG.lead_source",
+ "ref_doctype": "Sales Invoice",
+ "report_name": "Lead Source Billing Analysis",
+ "report_type": "Query Report",
+ "roles": [
+  {
+   "role": "Accounts User"
+  },
+  {
+   "role": "Accounts Manager"
+  },
+  {
+   "role": "Doctor"
+  },
+  {
+   "role": "\u0645\u0648\u0638\u0641 \u0627\u0633\u062a\u0642\u0628\u0627\u0644"
+  }
+ ]
+}
