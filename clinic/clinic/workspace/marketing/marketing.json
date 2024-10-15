@@ -1,6 +1,6 @@
 {
  "cards_label": "cards",
- "category": "Modules",
+ "category": "Domains",
  "charts": [],
  "charts_label": "",
  "creation": "2024-03-05 17:34:21.359444",
@@ -16,7 +16,7 @@
  "is_standard": 1,
  "label": "Marketing",
  "links": [],
- "modified": "2024-03-05 18:03:09.366061",
+ "modified": "2024-10-02 14:39:31.327400",
  "modified_by": "Administrator",
  "module": "Clinic",
  "name": "Marketing",

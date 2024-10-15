@@ -11,7 +11,7 @@ from frappe import _
 import datetime
 from frappe.core.doctype.sms_settings.sms_settings import send_sms
 from clinic.clinic.doctype.clinic_settings.clinic_settings import get_receivable_account,get_income_account
-from datetime import  timedelta
+
 
 class ClientAppointmentCT(Document):
 	def on_update(self):
@@ -42,17 +42,6 @@ class ClientAppointmentCT(Document):
 		else:
 			super(ClientAppointmentCT, self).save(*args, **kwargs)
 
-	def before_save(self):
-		pass
-		#duration = timedelta(minutes=int(self.duration))
-
-		#hours, minutes, seconds = map(int, self.appointment_time.split(":"))
-		#opp_time = timedelta(hours=hours, minutes=minutes, seconds=seconds)
-		#duration_time=opp_time+duration
-
-		
-		#if appo_info:
-			#frappe.throw("يوجد موعد خلال هذا الوقت ")
 
 def appointment_cancel(appointment_id):
 	appointment = frappe.get_doc("Client Appointment CT", appointment_id)
