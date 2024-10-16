@@ -816,6 +816,33 @@ frappe.ui.form.on('Client Appointment CT', {
 
 		
 	},
+	duration:function(frm){
+		if(frm.is_new())
+		{
+			return;
+		}
+		frm.disable_save();
+		frm.call({
+			method:"check_time_availability",
+			args:{
+				doc:frm.doc
+			},
+			callback: function (r) {
+				if (r.message) {
+					if(r.message.appointment_name!=="0"){
+						let url = `<a href="/app/client-appointment-ct/${r.message.appointment_name}" target="_blank">${r.message.appointment_name}</a>`;
+						frappe.msgprint({
+							title: __('Notification'),
+							indicator: 'red',
+							message: __('There is an Appointment:{0}',[url])
+						});
+					}else{
+						frm.enable_save();
+					}
+				}
+			}
+		})
+	}
 });
 
 var get_selected_item = function (frm, tableControl) {

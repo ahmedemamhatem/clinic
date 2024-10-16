@@ -31,6 +31,14 @@ class ClientAppointmentCT(Document):
 		self.flags.ignore_permissions = True
 		# duration is the only changeable field in the document
 		if not self.is_new():
+			duration = timedelta(minutes=int(self.duration))
+			hours, minutes, seconds = map(int, self.appointment_time.split(":"))
+			opp_time = timedelta(hours=hours, minutes=minutes, seconds=seconds)
+			duration_time=opp_time+duration
+			print("!!!!!!!!!!!!!!")
+			print("!!!!!!!!!!!!!!")
+			print(duration_time)
+
 			self.db_set('duration', cint(self.duration))
 			self.db_set('physician', self.physician)
 			self.db_set('doctor_name', frappe.db.get_value("Doctor",self.physician,"first_name"))
@@ -53,6 +61,37 @@ class ClientAppointmentCT(Document):
 		
 		#if appo_info:
 			#frappe.throw("يوجد موعد خلال هذا الوقت ")
+	
+@frappe.whitelist()
+def check_time_availability(doc):
+	doc=json.loads(doc)
+	duration = timedelta(minutes=int(doc["duration"]))
+	hours, minutes, seconds = map(int,doc["appointment_time"].split(":"))
+	opp_time = timedelta(hours=hours, minutes=minutes, seconds=seconds)
+	end_time=opp_time+duration
+	query="""select * from `tabClient Appointment CT` where status!="Cancelled" and physician=%(doctor)s and 
+			appointment_date=%(appointment_date)s and name!=%(name)s"""
+
+	data=frappe.db.sql(query,{
+		"doctor":doc["physician"],
+		"appointment_date":doc["appointment_date"],
+		"name":doc["name"],
+		"start_time":doc["appointment_time"],
+		"end_time":end_time
+	},as_dict=True)
+
+	
+	for op in data:
+		if op["appointment_time"]>opp_time and op["appointment_time"]<end_time:
+			print(op)
+			return {"appointment_name":op["name"]}
+		
+	return {"appointment_name":"0"}
+
+
+
+
+
 
 def appointment_cancel(appointment_id):
 	appointment = frappe.get_doc("Client Appointment CT", appointment_id)
