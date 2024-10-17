@@ -31,13 +31,13 @@ class ClientAppointmentCT(Document):
 		self.flags.ignore_permissions = True
 		# duration is the only changeable field in the document
 		if not self.is_new():
-			duration = timedelta(minutes=int(self.duration))
-			hours, minutes, seconds = map(int, self.appointment_time.split(":"))
-			opp_time = timedelta(hours=hours, minutes=minutes, seconds=seconds)
-			duration_time=opp_time+duration
-			print("!!!!!!!!!!!!!!")
-			print("!!!!!!!!!!!!!!")
-			print(duration_time)
+			# duration = timedelta(minutes=int(self.duration))
+			# hours, minutes, seconds = map(int, self.appointment_time.split(":"))
+			# opp_time = timedelta(hours=hours, minutes=minutes, seconds=seconds)
+			# duration_time=opp_time+duration
+			# print("!!!!!!!!!!!!!!")
+			# print("!!!!!!!!!!!!!!")
+			# print(duration_time)
 
 			self.db_set('duration', cint(self.duration))
 			self.db_set('physician', self.physician)
