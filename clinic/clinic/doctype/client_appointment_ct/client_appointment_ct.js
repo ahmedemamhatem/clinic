@@ -505,7 +505,7 @@ frappe.ui.form.on('Client Appointment CT', {
 		}
 		function show_availability(data) {
 
-
+			console.log("1111111111111111111111111");
 			console.log('here');
 			console.log(data)
 			var d = new frappe.ui.Dialog({
@@ -536,7 +536,6 @@ frappe.ui.form.on('Client Appointment CT', {
 					${slot.from_time.substring(0, slot.from_time.length - 3)}
 				</button>`;
 			}).join("");
-
 			$wrapper
 				.css('margin-bottom', 0)
 				.addClass('text-center')
@@ -710,7 +709,7 @@ frappe.ui.form.on('Client Appointment CT', {
 						$wrapper
 						.find(`button[data-name="${slot_name + ""}"]`)
 						.attr('title', 'Booked')
-						.css('background-color', 'red')
+						.css({'background-color':'red','color':'white'})
 						if(slot.status == 'closed')
 						{
 							$wrapper.find(`button[data-name="${slot_name + ""}"]`)
@@ -1166,9 +1165,31 @@ function showavailability(frm) {
 		return date;
 	}
 
+	function timeToMinutes(timeStr) {
+		const [hours, minutes] = timeStr.split(":").map(Number);
+		return hours * 60 + minutes;
+	}
+
+	function convertTo12Hour(time24h) {
+		// Split the input string into hours and minutes
+		let [hours, minutes] = time24h.split(':');
+		
+		// Convert hours from string to number
+		hours = parseInt(hours, 10);
+	
+		// Determine AM or PM
+		const ampm = hours >= 12 ? 'PM' : 'AM';
+	
+		// Convert 24-hour time to 12-hour format
+		hours = hours % 12 || 12; // Modulo 12 (convert 0/12 to 12)
+	
+		// Return the time in 12-hour format with AM/PM
+		return `${hours}:${minutes} ${ampm}`;
+	}
+
 	//local function a bit different than the origninal
 	function show_availability(data) {
-
+		console.log("2222222222222222");
 		console.log("here 1");
 		console.log(data)
 
@@ -1194,13 +1215,25 @@ function showavailability(frm) {
 
 		// make buttons for each slot
 		var slot_html = data.available_slots.map(slot => {
+			//this code add by rashed because the doctor asl to hide prev
+			if(cur_frm.doc.appointment_date == frappe.datetime.now_date()){
+				if (timeToMinutes(slot.from_time)>timeToMinutes(convertTo12Hour(frappe.datetime.now_time()).slice(0, -2))){
+					console.log("hello from here");
+					console.log(slot.from_time);
+					return `<button class="btn btn-default"
+					data-name=${slot.from_time}
+					style="margin: 0 10px 10px 0; width: 72px" title="Available">
+					${slot.from_time.substring(0, slot.from_time.length - 3)}
+				</button>`;
+				}
+			}
 			return `<button class="btn btn-default"
 					data-name=${slot.from_time}
 					style="margin: 0 10px 10px 0; width: 72px" title="Available">
 					${slot.from_time.substring(0, slot.from_time.length - 3)}
 				</button>`;
+			//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
 		}).join("");
-
 		$wrapper
 			.css('margin-bottom', 0)
 			.addClass('text-center')
