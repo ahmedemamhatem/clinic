@@ -462,8 +462,12 @@ frappe.ui.form.on('Client Appointment CT', {
 				notRamadan:frm.doc.not_ramadan,
 			},
 			callback: (r) => {
-				console.log(r);
+				// console.log(r);
 				var data = r.message;
+				frm.doc.last_oppointment=data.available_slots[data.available_slots.length-1]
+				frm.doc.time_per_appointment=data.time_per_appointment;
+				console.log(frm.doc.last_oppointment);
+				console.log(frm.doc.time_per_appointment);
 				frm.call({
 					method:'get_time_off',
 					args:{
@@ -507,7 +511,7 @@ frappe.ui.form.on('Client Appointment CT', {
 
 			console.log("1111111111111111111111111");
 			console.log('here');
-			console.log(data)
+			console.log(data);
 			var d = new frappe.ui.Dialog({
 				title: __("Available slots"),
 				fields: [{ fieldtype: 'HTML', fieldname: 'available_slots' }],
@@ -1226,12 +1230,18 @@ function showavailability(frm) {
 					${slot.from_time.substring(0, slot.from_time.length - 3)}
 				</button>`;
 				}
-			}
-			return `<button class="btn btn-default"
+			}else if(cur_frm.doc.appointment_date != frappe.datetime.now_date()){
+				return `<button class="btn btn-default"
 					data-name=${slot.from_time}
 					style="margin: 0 10px 10px 0; width: 72px" title="Available">
 					${slot.from_time.substring(0, slot.from_time.length - 3)}
-				</button>`;
+				</button>`;	
+			}
+			// return `<button class="btn btn-default"
+			// 		data-name=${slot.from_time}
+			// 		style="margin: 0 10px 10px 0; width: 72px" title="Available">
+			// 		${slot.from_time.substring(0, slot.from_time.length - 3)}
+			// 	</button>`;
 			//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
 		}).join("");
 		$wrapper
