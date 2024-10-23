@@ -507,6 +507,28 @@ frappe.ui.form.on('Client Appointment CT', {
 			date.setSeconds(time[2]);
 			return date;
 		}
+		function timeToMinutes(timeStr) {
+			const [hours, minutes] = timeStr.split(":").map(Number);
+			return hours * 60 + minutes;
+		}
+	
+		function convertTo12Hour(time24h) {
+			// Split the input string into hours and minutes
+			let [hours, minutes] = time24h.split(':');
+			
+			// Convert hours from string to number
+			hours = parseInt(hours, 10);
+		
+			// Determine AM or PM
+			const ampm = hours >= 12 ? 'PM' : 'AM';
+		
+			// Convert 24-hour time to 12-hour format
+			hours = hours % 12 || 12; // Modulo 12 (convert 0/12 to 12)
+		
+			// Return the time in 12-hour format with AM/PM
+			return `${hours}:${minutes} ${ampm}`;
+		}
+
 		function show_availability(data) {
 
 			console.log("1111111111111111111111111");
@@ -519,7 +541,19 @@ frappe.ui.form.on('Client Appointment CT', {
 				primary_action: function () {
 					// book slot
 					frm.set_value('appointment_time', selected_slot);
-					frm.set_value('duration', data.time_per_appointment);
+					if(cur_frm.doc.appointment_date == frappe.datetime.now_date()){
+					if (timeToMinutes(frm.doc.last_oppointment["from_time"])<timeToMinutes(convertTo12Hour(frappe.datetime.now_time()).slice(0, -2))){
+						const different_time=timeToMinutes(convertTo12Hour(frappe.datetime.now_time()).slice(0, -2))-timeToMinutes(frm.doc.last_oppointment["from_time"]);
+						const duration_time=parseInt(frm.doc.time_per_appointment)-different_time;
+
+						frm.set_value('duration', duration_time);
+					}else{
+						frm.set_value('duration', data.time_per_appointment);	
+					}}else{
+						frm.set_value('duration', data.time_per_appointment);
+					}
+
+					// frm.set_value('duration', data.time_per_appointment);
 					//frm.set_value('status','Scheduled');
 					d.hide();
 					frm.enable_save();
