@@ -859,11 +859,13 @@ frappe.ui.form.on('Client Appointment CT', {
 		{
 			return;
 		}
-		if(parseInt(frm.doc.last_appointment)<parseInt(frm.doc.duration)){
-			frm.reload_doc();
-			frappe.throw(`Note The Working hours for Dector maximum time is:${frm.doc.last_appointment}`);
-			frm.set_value("duration",frm.doc.last_appointment);
-			// frm.reload_doc();
+		if(parseInt(frm.doc.last_appointment)>0){
+			if(parseInt(frm.doc.last_appointment)<parseInt(frm.doc.duration)){
+				frm.reload_doc();
+				frappe.throw(`Note The Working hours for Dector maximum time is:${frm.doc.last_appointment}`);
+				frm.set_value("duration",frm.doc.last_appointment);
+				// frm.reload_doc();
+			}
 		}
 		frm.disable_save();
 		frm.call({
