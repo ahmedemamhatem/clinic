@@ -882,6 +882,7 @@ frappe.ui.form.on('Client Appointment CT', {
 							indicator: 'red',
 							message: __('There is an Appointment:{0}',[url])
 						});
+						frm.reload_doc();
 					}else{
 						frm.enable_save();
 					}
