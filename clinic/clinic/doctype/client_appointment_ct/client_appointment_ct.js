@@ -547,6 +547,7 @@ frappe.ui.form.on('Client Appointment CT', {
 						const duration_time=parseInt(frm.doc.time_per_appointment)-different_time;
 
 						frm.set_value('duration', duration_time);
+						frm.set_value('last_appointment',duration_time);
 					}else{
 						frm.set_value('duration', data.time_per_appointment);	
 					}}else{
@@ -857,6 +858,12 @@ frappe.ui.form.on('Client Appointment CT', {
 		if(frm.is_new())
 		{
 			return;
+		}
+		if(parseInt(frm.doc.last_appointment)<parseInt(frm.doc.duration)){
+			frm.reload_doc();
+			frappe.throw(`Note The Working hours for Dector maximum time is:${frm.doc.last_appointment}`);
+			frm.set_value("duration",frm.doc.last_appointment);
+			// frm.reload_doc();
 		}
 		frm.disable_save();
 		frm.call({
