@@ -466,8 +466,8 @@ frappe.ui.form.on('Client Appointment CT', {
 				var data = r.message;
 				frm.doc.last_oppointment=data.available_slots[data.available_slots.length-1]
 				frm.doc.time_per_appointment=data.time_per_appointment;
-				console.log(frm.doc.last_oppointment);
-				console.log(frm.doc.time_per_appointment);
+				frm.set_value('last_appointment',frm.doc.time_per_appointment);
+				frm.set_value("time_last_appointment",frm.doc.last_oppointment["from_time"])
 				frm.call({
 					method:'get_time_off',
 					args:{
@@ -854,17 +854,20 @@ frappe.ui.form.on('Client Appointment CT', {
 
 		
 	},
+
 	duration:function(frm){
 		if(frm.is_new())
 		{
 			return;
 		}
-		if(parseInt(frm.doc.last_appointment)>0){
-			if(parseInt(frm.doc.last_appointment)<parseInt(frm.doc.duration)){
-				frm.reload_doc();
-				frappe.throw(`Note The Working hours for Dector maximum time is:${frm.doc.last_appointment}`);
-				frm.set_value("duration",frm.doc.last_appointment);
-				// frm.reload_doc();
+		if(frm.doc.time_last_appointment!==undefined & timeToMinutes(frm.doc.appointment_time)===timeToMinutes(frm.doc.time_last_appointment)){
+			if(parseInt(frm.doc.last_appointment)>0){
+				if(parseInt(frm.doc.last_appointment)<parseInt(frm.doc.duration)){
+					frm.reload_doc();
+					frappe.throw(`Note The Working hours for Dector maximum time is:${frm.doc.last_appointment}`);
+					frm.set_value("duration",frm.doc.last_appointment);
+					// frm.reload_doc();
+				}
 			}
 		}
 		frm.disable_save();
@@ -889,6 +892,11 @@ frappe.ui.form.on('Client Appointment CT', {
 				}
 			}
 		})
+
+		function timeToMinutes(timeStr) {
+			const [hours, minutes] = timeStr.split(":").map(Number);
+			return hours * 60 + minutes;
+		}
 	}
 });
 

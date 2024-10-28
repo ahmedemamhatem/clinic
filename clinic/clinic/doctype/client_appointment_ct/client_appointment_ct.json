@@ -57,7 +57,8 @@
   "from_doctor",
   "to_doctor",
   "first_doctor",
-  "last_appointment"
+  "last_appointment",
+  "time_last_appointment"
  ],
  "fields": [
   {
@@ -415,11 +416,16 @@
    "hidden": 1,
    "label": "Last Appointment",
    "read_only": 1
+  },
+  {
+   "fieldname": "time_last_appointment",
+   "fieldtype": "Time",
+   "label": "Last Appointment Time"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-10-24 14:57:50.401438",
+ "modified": "2024-10-28 12:27:24.362766",
  "modified_by": "Administrator",
  "module": "Clinic",
  "name": "Client Appointment CT",
