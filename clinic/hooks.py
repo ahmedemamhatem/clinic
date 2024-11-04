@@ -62,6 +62,11 @@ fixtures = [
 # before_install = "clinic.install.before_install"
 before_install = "clinic.api.deleteTranslation"
 
+
+doctype_js = {"Sales Invoice" : "public/js/sales_invoice_common.js",
+				"Customer":"public/js/customer_common.js"
+			}
+
 # Desk Notifications
 # ------------------
 # See frappe.core.notifications.get_notification_config
@@ -101,8 +106,8 @@ doc_events = {
 		"on_cancel":"clinic.api.updateDocument"
 	},
 	"Sales Invoice":{
-		"on_submit":"clinic.api.changeStatus",
-		"on_cancel":"clinic.api.changeIsBilled"
+		"on_submit":["clinic.api.changeStatus","clinic.clinic.common.sales_common.set_qitaf"],
+		"on_cancel":["clinic.api.changeIsBilled","clinic.clinic.common.sales_common.return_qitaf_in_cancel"]
 	}
 }
 
