@@ -6,15 +6,15 @@ with open('requirements.txt') as f:
 	install_requires = f.read().strip().split('\n')
 
 # get version from __version__ variable in clinic/__init__.py
-_version_re = re.compile(r'__version__\s+=\s+(.*)')
+#_version_re = re.compile(r'__version__\s+=\s+(.*)')
 
-with open('clinic/__init__.py', 'rb') as f:
-	version = str(ast.literal_eval(_version_re.search(
-		f.read().decode('utf-8')).group(1)))
+# with open('clinic/__init__.py', 'rb') as f:
+# 	version = str(ast.literal_eval(_version_re.search(
+# 		f.read().decode('utf-8')).group(1)))
 
 setup(
 	name='clinic',
-	version=version,
+	version='0.0.1',
 	description='Health Clinic Administration App',
 	author='Grey Cube Technologies',
 	author_email='sales@greycube.in',
