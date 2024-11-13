@@ -6,14 +6,15 @@ def get_customer_classify(customer_name):
     payments=frappe.db.get_all("Sales Invoice",filters={"customer":customer_name,"docstatus":1,"status":"Paid"},fields=["grand_total"])
     total_amount=sum(payment["grand_total"] for payment in payments)
 
-    if total_amount<30000:
+    if total_amount<=16000:
 
         return {"classify":"New"}
-    elif total_amount>=50000:
+    elif  total_amount in range(16001,30000):
+        return {"classify":"Regular"}
+    elif total_amount in range(30001,50000):
         return {"classify":"VIP"}
     else:
-        return {"classify":"Regular"}
-    
+        return {"classify":"VIP+"}
 
 
 
