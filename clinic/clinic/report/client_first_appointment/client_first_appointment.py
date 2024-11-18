@@ -14,27 +14,18 @@ def execute(filters=None):
 def get_data(filters):
 	from_date=datetime.strptime(filters.get("from_date"),'%Y-%m-%d').date()
 	to_date=datetime.strptime(filters.get("to_date"),'%Y-%m-%d').date()
-	tmp_list=[]
-	all_customers=frappe.db.get_all("Customer",filters={"disabled":0},fields=["name","customer_name"])
 
-	for customer in all_customers:
-		cact=frappe.db.get_all("Client Appointment CT",filters={"client":customer["name"]},fields=["name","appointment_date"],order_by='appointment_date ASC' ,limit=1)
-		if cact:
-			if  from_date <= cact[0]["appointment_date"]<= to_date:
-				obj={"client":customer["name"],"client_name":customer["name"],"appointment":cact[0]["name"],"appointment_date":cact[0]["appointment_date"]}
-				tmp_list.append(obj)
-
-	return tmp_list				
-
-	# sql=f""" select c.name,c.customer_name from `tabCustomer` c
-	# 		join `tabClient Appointment CT`  cact on c.name=cact.client
-	# 		where cact.appointment_date between {from_date} and {to_date}
-	# 		and cact.appointment_date=(
-	# 			select min(a2.appointment_date)
-	# 			from `tabClient Appointment CT` a2
-	# 			where a2.client=c.name
-	# 		);"""
-
+	sql=f""" select c.name as client,c.customer_name as client_name,cact.name as appointment,cact.appointment_date as appointment_date from `tabCustomer` c
+			join `tabClient Appointment CT`  cact on c.name=cact.client
+			where cact.appointment_date between '{from_date}' and '{to_date}'
+			and cact.appointment_date=(
+				select min(a2.appointment_date)
+				from `tabClient Appointment CT` a2
+				where a2.client=c.name
+			);"""
+	data=frappe.db.sql(sql,as_dict=True)
+	
+	return data
 def get_columns():
 	columns=[
 		{
