@@ -33,26 +33,22 @@ def get_columns():
 			"fieldname":"client",
 			"fieldtype":"Link",
 			"options":"Customer",
-			"width":150
 		},
 		{
 			"label":_("Client Name"),
 			"fieldname":"client_name",
 			"fieldtype":"Data",
-			"width":150
 		},
 		{
 			"label":_("Appointment"),
 			"fieldname":"appointment",
 			"fieldtype":"Link",
 			"options":"Client Appointment CT",
-			"width":150
 		},
 		{
 			"label":_("Appointment Date"),
 			"fieldname":"appointment_date",
 			"fieldtype":"Data",
-			"width":150
 		}
 	]
 	return columns
