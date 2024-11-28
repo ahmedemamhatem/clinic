@@ -18,6 +18,7 @@ def get_data(filters):
 	sql=f""" select c.name as client,c.customer_name as client_name,cact.name as appointment,cact.appointment_date as appointment_date from `tabCustomer` c
 			join `tabClient Appointment CT`  cact on c.name=cact.client
 			where cact.appointment_date between '{from_date}' and '{to_date}'
+			and  cact.status='Attended'
 			and cact.appointment_date=(
 				select min(a2.appointment_date)
 				from `tabClient Appointment CT` a2
