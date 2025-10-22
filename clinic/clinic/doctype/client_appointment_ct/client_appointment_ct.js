@@ -531,9 +531,9 @@ frappe.ui.form.on('Client Appointment CT', {
 
 		function show_availability(data) {
 
-			console.log("1111111111111111111111111");
-			console.log('here');
-			console.log(data);
+			//console.log("1111111111111111111111111");
+			//console.log('here');
+			//console.log(data);
 			var d = new frappe.ui.Dialog({
 				title: __("Available slots"),
 				fields: [{ fieldtype: 'HTML', fieldname: 'available_slots' }],
@@ -543,6 +543,7 @@ frappe.ui.form.on('Client Appointment CT', {
 					frm.set_value('appointment_time', selected_slot);
 					if(cur_frm.doc.appointment_date == frappe.datetime.now_date()){
 					if (timeToMinutes(frm.doc.last_oppointment["from_time"])<timeToMinutes(convertTo12Hour(frappe.datetime.now_time()).slice(0, -2))){
+            console.log('slnee'); 
 						const different_time=timeToMinutes(convertTo12Hour(frappe.datetime.now_time()).slice(0, -2))-timeToMinutes(frm.doc.last_oppointment["from_time"]);
 						const duration_time=parseInt(frm.doc.time_per_appointment)-different_time;
 
@@ -550,7 +551,8 @@ frappe.ui.form.on('Client Appointment CT', {
 						frm.set_value('last_appointment',duration_time);
 					}else{
 						frm.set_value('duration', data.time_per_appointment);	
-					}}else{
+					}
+          }else{
 						frm.set_value('duration', data.time_per_appointment);
 					}
 
@@ -588,11 +590,12 @@ frappe.ui.form.on('Client Appointment CT', {
 			// disable buttons for which appointments are booked
 
 			//custom:change button color and tooltip using css attribute
-			console.log("meow")
+			//console.log("meow")
 
 			if(cur_frm.doc.appointment_date == frappe.datetime.now_date() && frappe.datetime._date("HH", false) > "12")
 			{
 				// console.log("is in")
+        debugger;
 				let dialog_length = $($wrapper[0].children).length
 				
 				// console.log($($wrapper[0].children[0]).text().trim())
@@ -616,12 +619,21 @@ frappe.ui.form.on('Client Appointment CT', {
 				// else
 				// 	time_limit = "00:00"
 				// 	let current_time_wrap = ""
+        let time_appointment = "0.00"
 				for(let i=0; i<dialog_length-1; i++)
 				{
 					// current_time_wrap = moment($($wrapper[0].children[i]).text().trim(),"HH:mm").format("HH:mm");
 					console.log(`time limit: ${time_limit}`)
+          console.log($($wrapper[0].children[i]).text().trim())    
+          //time_limit = new Date().toLocaleTimeString([], { hour: '2-digit', minute: "2-digit", hour12: false })
 					// console.log(`time wrap: ${current_time_wrap}`)
-					if( $($wrapper[0].children[i]).text().trim() < time_limit )
+          time_appointment = $($wrapper[0].children[i]).text().trim()
+          if (time_appointment == "0:00") 
+          {
+            time_appointment = "23:59"
+            //console.log(time_appointment)            
+          }
+					if( time_appointment < time_limit )
 							{
 								
 								$($wrapper[0].children[i]).hide()

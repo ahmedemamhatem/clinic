@@ -32,7 +32,7 @@ frappe.query_reports["Payment Voucher Report"] = {
 		frappe.db.get_value("Doctor", { "user_id": user_mail/*"fahadbinslmah@gmail.com" */ }, "name").then((r) => {
 			//console.log(r.message.name)
 			let username = frappe.session.user_fullname
-			let allowed_users = ["atheer alsaadan", "جمعه", "ناصر العريج", "Dr.Nawaf Alshahrani","2Care ","Kholoud Alarfag","Nourah Alhnaia","Amir","Mohammed Eletrby"]
+			let allowed_users = ["atheer alsaadan", "جمعه", "ناصر العريج","Rana Alqfari", "Dr.Nawaf Alshahrani","2Care ","Kholoud Alarfag","Nourah Alhnaia","Amir","Mohammed Eletrby", "Noura Alawaji"]
 			let doc_code = r.message.name
 			
 			if (allowed_users.indexOf(username) >= 0) {

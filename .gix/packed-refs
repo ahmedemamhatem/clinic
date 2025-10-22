@@ -1,0 +1,3 @@
+# pack-refs with: peeled fully-peeled sorted 
+5bd69c420e17dac398231bca26b549e54dba132a refs/heads/master
+5bd69c420e17dac398231bca26b549e54dba132a refs/remotes/upstream/master
