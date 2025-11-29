@@ -14,6 +14,7 @@
   "nurse",
   "appointment_date",
   "check_availability",
+  "has_schedule_plan",
   "column_break_1",
   "duration",
   "patient_name",
@@ -421,11 +422,17 @@
    "fieldname": "time_last_appointment",
    "fieldtype": "Time",
    "label": "Last Appointment Time"
+  },
+  {
+   "default": "0",
+   "fieldname": "has_schedule_plan",
+   "fieldtype": "Check",
+   "label": "Has Schedule Plan"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-10-28 12:27:24.362766",
+ "modified": "2025-11-15 22:03:27.929981",
  "modified_by": "Administrator",
  "module": "Clinic",
  "name": "Client Appointment CT",

@@ -1,5 +1,6 @@
 frappe.ui.form.on("Customer",{
     refresh(frm){
+        order_summary(frm)
     	frm.events.set_customer_classifiy(frm);
     },
     onload(frm){
@@ -34,3 +35,38 @@ frappe.ui.form.on("Customer",{
    }
 
 })
+
+
+function order_summary(frm){
+    if (!frm.is_new()) {
+        frappe.call({
+            method: "clinic.doc_events.accounting.sales_invoice.sales_invoice.get_customer_order_summary",
+            args: {
+                customer: frm.doc.name
+            },
+            callback: function(response) {
+                const data = response.message;
+                if (data) {
+                    // Wait for the dashboard to be fully rendered
+                    setTimeout(() => {
+                        const dashboardSection = $('.form-stats .section-body .row');
+                        
+                        if (dashboardSection.length) {
+                            // Create and append new state elements
+                            const newStateHtml = `
+                                <div class="col-sm-6 indicator-column">
+                                    <span class="indicator green">(Total Orders): ${data.total_orders}</span>
+                                </div>
+                                <div class="col-sm-6 indicator-column">
+                                    <span class="indicator red">Unbilled Amount: ${data.unbilled_amount}</span>
+                                </div>
+                            `;
+                            
+                            dashboardSection.append(newStateHtml);
+                        }
+                    }, 100);
+                }
+            }
+    });
+}
+}

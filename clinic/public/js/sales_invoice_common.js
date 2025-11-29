@@ -1,7 +1,7 @@
 frappe.ui.form.on("Sales Invoice",{
-    // refresh(frm){
-
-    // }
+    // onload(frm){
+    //     get_remaining_amount(frm)
+    // },
     after_save(frm){
         let qitaf_amount=0;
         if(frm.doc.qitaf_amount>0 && frm.doc.use_qitaf===0 && frm.doc.is_return!==1){
@@ -75,3 +75,44 @@ frappe.ui.form.on("Sales Invoice",{
         
     // }
 })
+
+frappe.ui.form.on("Sales Invoice Item",{
+    rate:function(frm,cdt,cdn){
+        let row = locals[cdt][cdn]
+        if (frm.doc.appointment){
+            frappe.model.set_value(cdt,cdn,"price_list_rate",row.rate)
+        }
+    }
+})
+
+function get_remaining_amount(frm){
+    if (frm.doc.appointment && frm.is_new()){
+        frm.clear_table("items")
+        frm.refresh_field("items")
+        frappe.call({
+            method: "clinic.doc_events.accounting.sales_invoice.sales_invoice.get_remaining_amount",
+            args: { appointment: frm.doc.appointment },
+            callback: function(response){
+                const data = response.message;
+                console.log(data)
+                if (data){
+                    const { customer, remaining_amount, order_items } = data;
+                    frm.set_value("customer", customer);
+
+                    order_items.forEach(function(row){
+                        const new_row = frm.add_child("items");
+                        frappe.model.set_value(new_row.doctype, new_row.name, {
+                            "item_code": row.item_code,
+                            "qty": 1,
+                            "rate": remaining_amount,
+                            "price_list_rate": remaining_amount
+                        });
+                    });
+
+                    frm.refresh_field("customer")
+                    frm.refresh_field("items");
+                }
+            }
+        });
+    }
+}

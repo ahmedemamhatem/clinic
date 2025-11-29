@@ -64,7 +64,8 @@ before_install = "clinic.api.deleteTranslation"
 
 
 doctype_js = {"Sales Invoice" : "public/js/sales_invoice_common.js",
-				"Customer":"public/js/customer_common.js"
+				"Customer":"public/js/customer_common.js",
+				"Sales Order":"public/js/sales_order.js"
 			}
 
 # Desk Notifications
@@ -107,8 +108,10 @@ doc_events = {
 	},
 	"Sales Invoice":{
 		"on_submit":["clinic.api.changeStatus","clinic.clinic.common.sales_common.set_qitaf"],
-		"on_cancel":["clinic.api.changeIsBilled","clinic.clinic.common.sales_common.return_qitaf_in_cancel"]
-	}
+		"on_cancel":["clinic.api.changeIsBilled","clinic.clinic.common.sales_common.return_qitaf_in_cancel"],
+		"validate":"clinic.doc_events.accounting.sales_invoice.sales_invoice.validate"
+	},
+ 	
 }
 
 # Scheduled Tasks
