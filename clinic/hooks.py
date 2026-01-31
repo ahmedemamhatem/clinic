@@ -102,6 +102,9 @@ doc_events = {
 		"after_insert":"clinic.api.checkAvailability",
         "on_change": "clinic.clinic.doctype.appointment_forward.appointment_forward.update_billstatus"
 	},
+    "Sales Order":{
+		"before_validate":"clinic.doc_events.selling.sales_order.sales_order.before_validate"
+	},
 	"Consultation":{
 		"after_submit":"clinic.api.makeTreatment",
 		"on_cancel":"clinic.api.updateDocument"
@@ -109,7 +112,8 @@ doc_events = {
 	"Sales Invoice":{
 		"on_submit":["clinic.api.changeStatus","clinic.clinic.common.sales_common.set_qitaf"],
 		"on_cancel":["clinic.api.changeIsBilled","clinic.clinic.common.sales_common.return_qitaf_in_cancel"],
-		"validate":"clinic.doc_events.accounting.sales_invoice.sales_invoice.validate"
+		"validate":"clinic.doc_events.accounting.sales_invoice.sales_invoice.validate",
+        "before_insert":"clinic.doc_events.accounting.sales_invoice.sales_invoice.before_insert"
 	},
  	
 }

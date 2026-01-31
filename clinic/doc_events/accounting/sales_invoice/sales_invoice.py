@@ -5,6 +5,23 @@ from frappe import _
 def validate(doc, method=None):
     check_if_sales_order_created(doc)
 
+@frappe.whitelist()
+def before_insert(doc, method=None):
+    set_invoice_naming_series(doc)
+
+def set_invoice_naming_series(doc):
+    """
+    Sets the naming series for the Sales Invoice based on whether Client is saudi or not.
+
+    Args:
+        doc (Document): The current document being inserted (Sales Invoice)
+    """
+    customer_id = frappe.get_value("Customer", {"name": doc.customer}, "id_no")
+    # chck if customer id starts with no != "1"
+    if customer_id and not customer_id.startswith("1"):
+        doc.naming_series = "SINVW-.YYYY.-"
+    else:
+        doc.naming_series = "SINVS-.YYYY.-"
 
 def check_if_sales_order_created(doc):
     """

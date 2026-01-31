@@ -1,6 +1,6 @@
 // Copyright (c) 2016, ESS LLP and contributors
 // For license information, please see license.txt
-frappe.provide("erpnext.queries");
+frappe.provide("clinic.queries");
 frappe.ui.form.on('Client Appointment CT', {
 	setup: function (frm) {
 		frm.custom_make_buttons = {
@@ -22,6 +22,9 @@ frappe.ui.form.on('Client Appointment CT', {
 				console.log(r.message)
 			}
 		});
+				var now = new Date();
+				var currentHour = now.getHours();
+				var currentMinute = now.getMinutes();
 
 		if(cur_frm.doc.parent_doctor != null && cur_frm.doc.saved == '0')
 			{
@@ -34,6 +37,11 @@ frappe.ui.form.on('Client Appointment CT', {
 	},
 	refresh: function (frm) {
 
+			var [sh, sm] = slotTime.split(":").map(Number);
+			if (isLateNight) {
+				// 00:00-05:59 is considered future (for next day)
+				return false;
+			}
 
 		frm.set_df_property("doctor_t", "read_only", frm.is_new() ? 0 : 1);
 
@@ -51,6 +59,11 @@ frappe.ui.form.on('Client Appointment CT', {
 			$($foot_warper[i]).removeClass('frappe-timestamp')
 		}
 
+				var slotTime = slot.from_time;
+				var slotLabel = slotTime.substring(0, slotTime.length - 3);
+				var disabled = false;
+				var style = "margin: 0 10px 10px 0; width: 72px";
+				var title = "Available";
 		//DR.nehal hussain dr.khalid Room 14 (Qswitch) LASER 2 LASER
 		//setting up services filters
 		cur_frm.fields_dict.service.get_query = function (doc, cdt, cdn) {
@@ -108,6 +121,21 @@ frappe.ui.form.on('Client Appointment CT', {
 				 };
 		 
 	 }*/
+							if (["waiting attend", "Attended", "Scheduled", "Open", "closed", "To Bill", "Billed", "Under Treatment", "Retouch"].includes(slot.status)) {
+								// Find all slots that match the appointment time (ignore seconds)
+								let bookedTime = slot.appointment_time ? slot.appointment_time.slice(0,5) : null;
+								if (bookedTime) {
+									$wrapper.find('button').each(function() {
+										let btnTime = $(this).attr('data-name');
+										if (btnTime && btnTime.slice(0,5) === bookedTime) {
+											$(this)
+												.attr('title', 'Booked')
+												.css({'background-color':'red','color':'white'})
+												.attr('disabled', true);
+										}
+									});
+								}
+							}
 
 		//console.log("refresh event " + frm.doc.status)
 
@@ -533,7 +561,7 @@ frappe.ui.form.on('Client Appointment CT', {
 
 			//console.log("1111111111111111111111111");
 			//console.log('here');
-			//console.log(data);
+			console.log(data);
 			var d = new frappe.ui.Dialog({
 				title: __("Available slots"),
 				fields: [{ fieldtype: 'HTML', fieldname: 'available_slots' }],
@@ -569,21 +597,83 @@ frappe.ui.form.on('Client Appointment CT', {
 			// disable dialog action initially
 			d.get_primary_btn().attr('disabled', true);
 
-			// make buttons for each slot
-			var slot_html = data.available_slots.map(slot => {
-				return `<button class="btn btn-default"
-					data-name=${slot.from_time}
-					style="margin: 0 10px 10px 0; width: 72px" title="Available">
-					${slot.from_time.substring(0, slot.from_time.length - 3)}
-				</button>`;
-			}).join("");
-			$wrapper
-				.css('margin-bottom', 0)
-				.addClass('text-center')
-				.html(slot_html);
+						// Enhanced: Only allow valid future slots, disable past slots, handle late night
+						var now = new Date();
+						var currentHour = now.getHours();
+						var currentMinute = now.getMinutes();
+
+						var todayStr = frappe.datetime.now_date();
+						var yesterdayStr = moment(todayStr, "YYYY-MM-DD").subtract(1, "days").format("YYYY-MM-DD");
+						var isToday = cur_frm.doc.appointment_date == todayStr;
+						var isYesterday = cur_frm.doc.appointment_date == yesterdayStr;
+						var isLateNight = (currentHour >= 0 && currentHour < 6);
+
+						function slotIsPast(slotTime) {
+							// slotTime: "HH:MM:SS"
+							var [sh, sm] = slotTime.split(":").map(Number);
+							if (isToday) {
+								// Always treat 00:00-05:59 as future (enabled)
+								if (sh >= 0 && sh < 6) {
+									return false;
+								}
+								if (isLateNight) {
+									// For today, 00:00-05:59 is future, earlier slots are past
+									return false;
+								} else {
+									if (sh < currentHour || (sh === currentHour && sm <= currentMinute)) {
+										return true;
+									}
+								}
+							} else if (isYesterday && isLateNight) {
+								// If appointment is yesterday and now is late night, only 00:00-05:59 are future
+								if (sh < 6) {
+									return false;
+								} else {
+									return true;
+								}
+							}
+							return false;
+						}
+
+						var slot_html = data.available_slots.map(slot => {
+							var slotTime = slot.from_time;
+							var slotLabel = slotTime.substring(0, slotTime.length - 3);
+							var disabled = false;
+							var style = "margin: 0 10px 10px 0; width: 72px";
+							var title = "Available";
+
+
+							// Disable past slots for today, and for yesterday if late night
+							if (slotIsPast(slotTime)) {
+								disabled = true;
+								style += ";background-color:#eee;color:#888";
+								title = "Past";
+							}
+
+							return `<button class="btn btn-default" data-name="${slotTime}" style="${style}" title="${title}"${disabled ? " disabled" : ""}>${slotLabel}</button>`;
+						}).join("");
+						$wrapper
+							.css('margin-bottom', 0)
+							.addClass('text-center')
+							.html(slot_html);
 			//by Reda
-			data.appointments.map(slot => {
-				//if(slot.duration)
+			// Robustly disable and color all booked slots after all buttons are created
+			data.appointments.forEach(slot => {
+				if (["waiting attend", "Attended", "Scheduled", "Open", "closed", "To Bill", "Billed", "Under Treatment", "Retouch"].includes(slot.status)) {
+					// Find all slots that match the appointment time (ignore seconds)
+					let bookedTime = slot.appointment_time ? slot.appointment_time.slice(0,5) : null;
+					if (bookedTime) {
+						$wrapper.find('button').each(function() {
+							let btnTime = $(this).attr('data-name');
+							if (btnTime && btnTime.slice(0,5) === bookedTime) {
+								$(this)
+									.attr('title', 'Booked')
+									.css({'background-color':'red','color':'white'})
+									.attr('disabled', true);
+							}
+						});
+					}
+				}
 			});
 			//console.log("data check")
 			//console.log(data);
@@ -592,61 +682,32 @@ frappe.ui.form.on('Client Appointment CT', {
 			//custom:change button color and tooltip using css attribute
 			//console.log("meow")
 
-			if(cur_frm.doc.appointment_date == frappe.datetime.now_date() && frappe.datetime._date("HH", false) > "12")
-			{
-				// console.log("is in")
-        debugger;
-				let dialog_length = $($wrapper[0].children).length
-				
-				// console.log($($wrapper[0].children[0]).text().trim())
-				let dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-				let time_limit = ""
-				var currentDate = new Date()
-				if(dayNames[currentDate.getDay()] == "Thursday" && frappe.datetime._date("hh:mm", false) >= "08:00" && frappe.datetime._date("hh:mm", false) <= "12:00")
-					{time_limit = "8:00"}
-				else if (frappe.datetime._date("hh:mm", false) >= "09:00" && frappe.datetime._date("hh:mm", false) <= "12:00")
-					{time_limit = "9:00"}
-				else
-					{
-						time_limit = frappe.datetime._date("hh:mm",false)
-						if(time_limit < "10:00")
-						{
-							time_limit = time_limit.slice(1)
-						}
-					}
-				// if( frappe.datetime._date("HH:MM",false) >= "12:00" && frappe.datetime._date("HH:MM",false) <= "23:59")
-				// 	time_limit = frappe.datetime._date("hh:mm",false)
-				// else
-				// 	time_limit = "00:00"
-				// 	let current_time_wrap = ""
-        let time_appointment = "0.00"
-				for(let i=0; i<dialog_length-1; i++)
-				{
-					// current_time_wrap = moment($($wrapper[0].children[i]).text().trim(),"HH:mm").format("HH:mm");
-					console.log(`time limit: ${time_limit}`)
-          console.log($($wrapper[0].children[i]).text().trim())    
-          //time_limit = new Date().toLocaleTimeString([], { hour: '2-digit', minute: "2-digit", hour12: false })
-					// console.log(`time wrap: ${current_time_wrap}`)
-          time_appointment = $($wrapper[0].children[i]).text().trim()
-          if (time_appointment == "0:00") 
-          {
-            time_appointment = "23:59"
-            //console.log(time_appointment)            
-          }
-					if( time_appointment < time_limit )
-							{
-								
-								$($wrapper[0].children[i]).hide()
-								console.log("true")
-							}
-
-					// if(time_limit < "12:00"  && current_time_wrap >= "12:00")
-					// {
-					// 	console.log("entered")
-					// 	$($wrapper[0].children[i]).hide()
-					// }
-					
-				}
+			// Fix: When current time is between 12:00 and 23:59, do not hide any slots for today
+			if(cur_frm.doc.appointment_date == frappe.datetime.now_date()) {
+				console.log("checking time for today");
+				var now = new Date();
+				var currentHour = now.getHours();
+				// If current time is between 12:00 and 23:59, show all slots (do not hide any)
+				if (currentHour >= 12 && currentHour <= 23) {
+					// Do nothing, show all slots
+				} 
+				// else {
+				// 	// Keep previous logic for other time ranges if needed
+				// 	let dialog_length = $($wrapper[0].children).length;
+				// 	let time_limit = frappe.datetime._date("hh:mm",false);
+				// 	if(time_limit < "10:00") {
+				// 		time_limit = time_limit.slice(1);
+				// 	}
+				// 	for(let i=0; i<dialog_length-1; i++) {
+				// 		let time_appointment = $($wrapper[0].children[i]).text().trim();
+				// 		if (time_appointment == "0:00") {
+				// 			time_appointment = "23:59";
+				// 		}
+				// 		if( time_appointment < time_limit ) {
+				// 			$($wrapper[0].children[i]).hide();
+				// 		}
+				// 	}
+				// }
 			}
 			// else if (cur_frm.doc.appointment_date == moment(frappe.datetime.now_date(), "YYYY-MM-DD").subtract(1,"days").format("YYYY-MM-DD") && frappe.datetime._date("HH:MM",false) < "05:00" )
 			// {
@@ -755,12 +816,14 @@ frappe.ui.form.on('Client Appointment CT', {
 						//$($wrapper[0].children[i]).hide()
 					//}
 
+
 					if(testtime >time_string_parse( slot.appointment_time)|| time_equality_comp(testtime,time_string_parse(slot.appointment_time)))
 					{
 						$wrapper
 						.find(`button[data-name="${slot_name + ""}"]`)
 						.attr('title', 'Booked')
 						.css({'background-color':'red','color':'white'})
+						.attr('disabled', true); // Always disable booked slots
 						if(slot.status == 'closed')
 						{
 							$wrapper.find(`button[data-name="${slot_name + ""}"]`)
@@ -802,7 +865,8 @@ frappe.ui.form.on('Client Appointment CT', {
 							.find(`button[data-name="${s_slot_name}"]`)
 							.attr('title', 'Booked')
 							.css('background-color', 'red')
-							if(slot.status == 'closed')
+							.attr('disabled', true); // Always disable booked slots
+						if(slot.status == 'closed')
 						{
 							$wrapper.find(`button[data-name="${s_slot_name}"]`)
 							.attr('title', 'time off')
@@ -1426,6 +1490,7 @@ function showavailability(frm) {
 					.find(`button[data-name="${slot_name + ""}"]`)
 					.attr('title', 'Booked')
 					.css('background-color', 'red')
+					.attr('disabled', true); // Always disable booked slots
 					if(slot.status == "closed")
 					{
 						$wrapper
@@ -1469,13 +1534,14 @@ function showavailability(frm) {
 						.find(`button[data-name="${s_slot_name}"]`)
 						.attr('title', 'Booked')
 						.css('background-color', 'red')
-						if(slot.status == "closed")
-						{
-							$wrapper
-							.find(`button[data-name="${s_slot_name}"]`)
-							.attr('title', 'time off')
-							.attr("disabled",true)
-						}
+						.attr('disabled', true); // Always disable booked slots
+					if(slot.status == "closed")
+					{
+						$wrapper
+						.find(`button[data-name="${s_slot_name}"]`)
+						.attr('title', 'time off')
+						.attr("disabled",true)
+					}
 					//.attr('disabled','true')
 				}
 
