@@ -666,10 +666,14 @@ frappe.ui.form.on('Client Appointment CT', {
 						$wrapper.find('button').each(function() {
 							let btnTime = $(this).attr('data-name');
 							if (btnTime && btnTime.slice(0,5) === bookedTime) {
+								let isPastSlot = $(this).attr('disabled') === 'disabled';
 								$(this)
 									.attr('title', 'Booked')
-									.css({'background-color':'red','color':'white'})
-									.attr('disabled', true);
+									.css({'background-color':'red','color':'white'});
+								// Only disable if it's a past slot
+								if (isPastSlot) {
+									$(this).attr('disabled', true);
+								}
 							}
 						});
 					}
@@ -819,16 +823,17 @@ frappe.ui.form.on('Client Appointment CT', {
 
 					if(testtime >time_string_parse( slot.appointment_time)|| time_equality_comp(testtime,time_string_parse(slot.appointment_time)))
 					{
-						$wrapper
-						.find(`button[data-name="${slot_name + ""}"]`)
-						.attr('title', 'Booked')
-						.css({'background-color':'red','color':'white'})
-						.attr('disabled', true); // Always disable booked slots
-						if(slot.status == 'closed')
+						let $btn = $wrapper.find(`button[data-name="${slot_name + ""}"]`);
+						let isPastSlot = $btn.attr('disabled') === 'disabled';
+						$btn.attr('title', 'Booked')
+							.css({'background-color':'red','color':'white'});
+						// Only disable if it's a past slot or time off
+						if(slot.status == 'closed' || isPastSlot)
 						{
-							$wrapper.find(`button[data-name="${slot_name + ""}"]`)
-							.attr('title', 'time off')
-							.attr('disabled',true)
+							$btn.attr('disabled',true);
+							if(slot.status == 'closed') {
+								$btn.attr('title', 'time off');
+							}
 						}
 					}
 					
@@ -861,16 +866,17 @@ frappe.ui.form.on('Client Appointment CT', {
 						console.log('----------------------------------------------------------------------')
 						
 						//if(appointment_time.from_time)
-						$wrapper
-							.find(`button[data-name="${s_slot_name}"]`)
-							.attr('title', 'Booked')
-							.css('background-color', 'red')
-							.attr('disabled', true); // Always disable booked slots
-						if(slot.status == 'closed')
+						let $slotBtn = $wrapper.find(`button[data-name="${s_slot_name}"]`);
+						let isSlotPast = $slotBtn.attr('disabled') === 'disabled';
+						$slotBtn.attr('title', 'Booked')
+							.css({'background-color': 'red', 'color': 'white'});
+						// Only disable if it's a past slot or time off
+						if(slot.status == 'closed' || isSlotPast)
 						{
-							$wrapper.find(`button[data-name="${s_slot_name}"]`)
-							.attr('title', 'time off')
-							.attr('disabled',true)
+							$slotBtn.attr('disabled',true);
+							if(slot.status == 'closed') {
+								$slotBtn.attr('title', 'time off');
+							}
 						}
 						//.attr('disabled','true')
 					}
@@ -1486,17 +1492,17 @@ function showavailability(frm) {
 				
 				if(testtime >time_string_parse( slot.appointment_time)|| time_equality_comp(testtime,time_string_parse(slot.appointment_time)))
 				{
-					$wrapper
-					.find(`button[data-name="${slot_name + ""}"]`)
-					.attr('title', 'Booked')
-					.css('background-color', 'red')
-					.attr('disabled', true); // Always disable booked slots
-					if(slot.status == "closed")
+					let $btn = $wrapper.find(`button[data-name="${slot_name + ""}"]`);
+					let isPastSlot = $btn.attr('disabled') === 'disabled';
+					$btn.attr('title', 'Booked')
+						.css({'background-color': 'red', 'color': 'white'});
+					// Only disable if it's a past slot or time off
+					if(slot.status == "closed" || isPastSlot)
 					{
-						$wrapper
-						.find(`button[data-name="${slot_name + ""}"]`)
-						.attr('title', 'time off')
-						.attr("disabled",true)
+						$btn.attr("disabled",true);
+						if(slot.status == "closed") {
+							$btn.attr('title', 'time off');
+						}
 					}
 				}
 				
@@ -1529,18 +1535,17 @@ function showavailability(frm) {
 					console.log('----------------------------------------------------------------------')
 					
 					//if(appointment_time.from_time)
-					
-					$wrapper
-						.find(`button[data-name="${s_slot_name}"]`)
-						.attr('title', 'Booked')
-						.css('background-color', 'red')
-						.attr('disabled', true); // Always disable booked slots
-					if(slot.status == "closed")
+					let $slotBtn = $wrapper.find(`button[data-name="${s_slot_name}"]`);
+					let isSlotPast = $slotBtn.attr('disabled') === 'disabled';
+					$slotBtn.attr('title', 'Booked')
+						.css({'background-color': 'red', 'color': 'white'});
+					// Only disable if it's a past slot or time off
+					if(slot.status == "closed" || isSlotPast)
 					{
-						$wrapper
-						.find(`button[data-name="${s_slot_name}"]`)
-						.attr('title', 'time off')
-						.attr("disabled",true)
+						$slotBtn.attr("disabled",true);
+						if(slot.status == "closed") {
+							$slotBtn.attr('title', 'time off');
+						}
 					}
 					//.attr('disabled','true')
 				}
