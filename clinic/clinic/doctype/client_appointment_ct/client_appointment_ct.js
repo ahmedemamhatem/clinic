@@ -37,12 +37,6 @@ frappe.ui.form.on('Client Appointment CT', {
 	},
 	refresh: function (frm) {
 
-			var [sh, sm] = slotTime.split(":").map(Number);
-			if (isLateNight) {
-				// 00:00-05:59 is considered future (for next day)
-				return false;
-			}
-
 		frm.set_df_property("doctor_t", "read_only", frm.is_new() ? 0 : 1);
 
 		//hide Consultation from the connections
@@ -59,11 +53,6 @@ frappe.ui.form.on('Client Appointment CT', {
 			$($foot_warper[i]).removeClass('frappe-timestamp')
 		}
 
-				var slotTime = slot.from_time;
-				var slotLabel = slotTime.substring(0, slotTime.length - 3);
-				var disabled = false;
-				var style = "margin: 0 10px 10px 0; width: 72px";
-				var title = "Available";
 		//DR.nehal hussain dr.khalid Room 14 (Qswitch) LASER 2 LASER
 		//setting up services filters
 		cur_frm.fields_dict.service.get_query = function (doc, cdt, cdn) {
@@ -121,21 +110,6 @@ frappe.ui.form.on('Client Appointment CT', {
 				 };
 		 
 	 }*/
-							if (["waiting attend", "Attended", "Scheduled", "Open", "closed", "To Bill", "Billed", "Under Treatment", "Retouch"].includes(slot.status)) {
-								// Find all slots that match the appointment time (ignore seconds)
-								let bookedTime = slot.appointment_time ? slot.appointment_time.slice(0,5) : null;
-								if (bookedTime) {
-									$wrapper.find('button').each(function() {
-										let btnTime = $(this).attr('data-name');
-										if (btnTime && btnTime.slice(0,5) === bookedTime) {
-											$(this)
-												.attr('title', 'Booked')
-												.css({'background-color':'red','color':'white'})
-												.attr('disabled', true);
-										}
-									});
-								}
-							}
 
 		//console.log("refresh event " + frm.doc.status)
 
@@ -179,7 +153,7 @@ frappe.ui.form.on('Client Appointment CT', {
 			// frm.add_custom_button(__("Consultation"), function () {
 			// 	btn_create_consultation(frm);
 			// }, "Create");
-			frm.add_custom_button(__('لم يحضر'), function () {
+			frm.add_custom_button('لم يحضر', function () {
 				btn_attend(frm, "لم يحضر");
 			});
 			
@@ -191,7 +165,7 @@ frappe.ui.form.on('Client Appointment CT', {
 			frm.add_custom_button(__('Patient is Attended'), function () {
 				btn_attend(frm, "Attended");
 			});
-			frm.add_custom_button(__('لم يحضر'), function () {
+			frm.add_custom_button('لم يحضر', function () {
 				btn_attend(frm, "لم يحضر");
 			});
 			
