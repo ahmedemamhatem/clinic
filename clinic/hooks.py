@@ -146,6 +146,9 @@ scheduler_events = {
 		"clinic.clinic.doctype.whatsapp_doc.whatsapp_doc.whatsapp_sched"
 
 		],
+		"*/5 * * * *": [
+			"clinic.clinic.doctype.client_appointment_ct.client_appointment_ct.auto_cancel_late_appointments"
+		]
 	
 	},
 	

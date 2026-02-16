@@ -548,3 +548,108 @@ def client_get_query(doctype, txt, searchfield, start, page_len, filters):
 	'page_len': page_len
 	})
 	pass
+
+
+def auto_cancel_late_appointments():
+	"""
+	Auto-cancel appointments that exceed doctor's allowed late time.
+	Runs every 5 minutes via scheduler.
+	Checks appointments with status 'Scheduled' or 'Waiting' for current date.
+	If current time is between 00:00-06:00, checks previous day's appointments.
+	"""
+	try:
+		# Use frappe.utils to get site timezone aware datetime
+		from frappe.utils import now_datetime, get_datetime, add_days, getdate
+		
+		now = now_datetime()
+		current_time = now.time()
+		
+		# Determine which date to check
+		# If time is between 00:00-06:00 (night shift), check yesterday's appointments
+		if current_time >= datetime.time(0, 0) and current_time < datetime.time(6, 0):
+			check_date = add_days(getdate(), -1)
+		else:
+			check_date = getdate()
+		
+		frappe.log_error(
+			"Running auto_cancel_late_appointments for date: {} now {}".format(check_date, now),
+			"Auto Cancel Late Appointments"
+		)
+		
+		
+		# Get appointments with status Scheduled or Waiting for the target date
+		appointments = frappe.db.sql("""
+			SELECT 
+				ca.name,
+				ca.appointment_time,
+				ca.physician,
+				d.allowed_late_time
+			FROM 
+				`tabClient Appointment CT` ca
+			INNER JOIN 
+				`tabDoctor` d ON ca.physician = d.name
+			WHERE 
+				ca.appointment_date = %(check_date)s
+				AND ca.status IN ('Scheduled', 'Waiting')
+				AND ca.docstatus < 2
+				AND d.allowed_late_time IS NOT NULL
+				AND d.allowed_late_time > 0
+		""", {'check_date': check_date}, as_dict=True)
+		
+		cancelled_count = 0
+		
+		for appointment in appointments:
+			# Calculate deadline: appointment_time + allowed_late_time
+			# appointment_time is stored as timedelta, convert to datetime
+			if isinstance(appointment.appointment_time, datetime.timedelta):
+				# Convert timedelta to time by creating datetime at midnight and adding timedelta
+				appointment_datetime = datetime.datetime.combine(check_date, datetime.time(0, 0))
+				appointment_datetime += appointment.appointment_time
+			else:
+				# If it's already a time object
+				appointment_datetime = datetime.datetime.combine(
+					check_date, 
+					appointment.appointment_time or datetime.time(0, 0)
+				)
+			
+			allowed_late_minutes = int(appointment.allowed_late_time or 0)
+			deadline = appointment_datetime + datetime.timedelta(minutes=allowed_late_minutes)
+			
+			# Convert deadline to timezone-aware datetime for comparison
+			deadline_aware = get_datetime(deadline)
+			
+			# If current time exceeds deadline, cancel the appointment
+			if now > deadline_aware:
+				frappe.db.set_value(
+					"Client Appointment CT", 
+					appointment.name, 
+					"status", 
+					"لم يحضر"
+				)
+				
+				# Add comment for audit trail
+				doc = frappe.get_doc("Client Appointment CT", appointment.name)
+				doc.add_comment(
+					'Info', 
+					'Appointment auto-cancelled due to exceeding allowed late time of {} minutes'.format(
+						allowed_late_minutes
+					)
+				)
+				
+				cancelled_count += 1
+		
+		if cancelled_count > 0:
+			frappe.db.commit()
+			frappe.logger().info(
+				"Auto-cancelled {} late appointments for date {}".format(
+					cancelled_count, 
+					check_date
+				)
+			)
+			
+	except Exception as e:
+		frappe.logger().error("Error in auto_cancel_late_appointments: {}".format(str(e)))
+		frappe.log_error(
+			message=frappe.get_traceback(), 
+			title="Auto Cancel Late Appointments Error"
+		)
