@@ -10,6 +10,7 @@
  "field_order": [
   "naming_series",
   "client",
+  "lead_source",
   "physician",
   "nurse",
   "appointment_date",
@@ -428,11 +429,18 @@
    "fieldname": "has_schedule_plan",
    "fieldtype": "Check",
    "label": "Has Schedule Plan"
+  },
+  {
+   "fieldname": "lead_source",
+   "fieldtype": "Link",
+   "label": "Lead Source",
+   "options": "Lead Source",
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-11-15 22:03:27.929981",
+ "modified": "2026-02-23 17:54:25.979614",
  "modified_by": "Administrator",
  "module": "Clinic",
  "name": "Client Appointment CT",

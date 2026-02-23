@@ -1105,6 +1105,16 @@ frappe.ui.form.on("Client Appointment CT", "doctor_t", function(frm){
 
 })
 
+frappe.ui.form.on("Client Appointment CT", "client", function(frm) {
+	if (frm.doc.client) {
+		frappe.db.get_value('Customer', frm.doc.client, 'lead_source', function(r) {
+			if (r && r.lead_source) {
+				frm.set_value('lead_source', r.lead_source);
+			}
+		});
+	}
+});
+
 // frappe.ui.form.on("Client Appointment CT", "appointment_date", function (frm) {
 // 	let ramadan_date_up = ''
 // 	if(!cur_frm.doc.ramadan_next_day )

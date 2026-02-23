@@ -27,6 +27,7 @@
   "physician_schedule",
   "column_break_17",
   "time_per_appointment",
+  "allowed_late_time",
   "charges",
   "op_consulting_charge",
   "column_break_20",
@@ -224,12 +225,18 @@
    "fieldname": "stamp",
    "fieldtype": "Attach Image",
    "label": "stamp"
+  },
+  {
+   "fieldname": "allowed_late_time",
+   "fieldtype": "Data",
+   "label": "Allowed Late Time",
+   "reqd": 1
   }
  ],
  "image_field": "image",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-05-29 15:35:58.081888",
+ "modified": "2026-02-23 17:43:03.476145",
  "modified_by": "Administrator",
  "module": "Clinic",
  "name": "Doctor",

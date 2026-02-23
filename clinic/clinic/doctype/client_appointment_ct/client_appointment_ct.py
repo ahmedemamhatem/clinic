@@ -26,6 +26,9 @@ class ClientAppointmentCT(Document):
 		# self.ignore_permissions = True
 		pass
 
+	def on_submit(self):
+		update_customer_lead_source(self)
+
 	def save(self, *args, **kwargs):
 
 		self.flags.ignore_permissions = True
@@ -51,6 +54,7 @@ class ClientAppointmentCT(Document):
 			super(ClientAppointmentCT, self).save(*args, **kwargs)
 
 	def before_save(self):
+		update_customer_lead_source(self)
 		pass
 		#duration = timedelta(minutes=int(self.duration))
 
@@ -653,3 +657,10 @@ def auto_cancel_late_appointments():
 			message=frappe.get_traceback(), 
 			title="Auto Cancel Late Appointments Error"
 		)
+
+def update_customer_lead_source(doc):
+	if doc.lead_source and doc.client:
+		customer_lead_source = frappe.get_value("Customer", doc.client, "lead_source")
+		if not customer_lead_source:
+			frappe.db.set_value("Customer", doc.client, "lead_source", doc.lead_source)
+			frappe.db.commit()
