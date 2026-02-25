@@ -27,7 +27,8 @@ class ClientAppointmentCT(Document):
 		pass
 
 	def on_submit(self):
-		update_customer_lead_source(self)
+		pass
+		# update_customer_lead_source(self)
 
 	def save(self, *args, **kwargs):
 
@@ -54,7 +55,7 @@ class ClientAppointmentCT(Document):
 			super(ClientAppointmentCT, self).save(*args, **kwargs)
 
 	def before_save(self):
-		update_customer_lead_source(self)
+		# update_customer_lead_source(self)
 		pass
 		#duration = timedelta(minutes=int(self.duration))
 
@@ -225,7 +226,7 @@ def get_time_off(date, physician):
 	return data		
 
 @frappe.whitelist()
-def update_status(appointment_id, status):
+def update_status(appointment_id, status,lead_source=None):
 	old_status = ''
 	if(appointment_id[:3] == "COP"):
 		doc = frappe.get_doc("Client Appointment CT", appointment_id)
@@ -658,9 +659,15 @@ def auto_cancel_late_appointments():
 			title="Auto Cancel Late Appointments Error"
 		)
 
-def update_customer_lead_source(doc):
-	if doc.lead_source and doc.client:
-		customer_lead_source = frappe.get_value("Customer", doc.client, "lead_source")
+@frappe.whitelist()
+def update_customer_lead_source(client,lead_source,appointment_id=None):
+	if appointment_id and lead_source:
+		frappe.db.sql("""
+			update `tabClient Appointment CT` set lead_source=%s where name=%s
+		""", (lead_source, appointment_id))
+
+	if lead_source and client:
+		customer_lead_source = frappe.get_value("Customer", client, "lead_source")
 		if not customer_lead_source:
-			frappe.db.set_value("Customer", doc.client, "lead_source", doc.lead_source)
+			frappe.db.set_value("Customer", client, "lead_source", lead_source)
 			frappe.db.commit()

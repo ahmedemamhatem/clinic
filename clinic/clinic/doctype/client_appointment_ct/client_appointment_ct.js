@@ -1019,6 +1019,19 @@ var btn_attend = function (frm, status) {
 		function () {
 			if(status == "Attended" || status == 'waiting attend')
 			{
+				if (!frm.doc.lead_source) {
+					frappe.throw("Please select Lead Source");
+				}
+				if (frm.doc.lead_source){
+					frappe.call({
+						method:"clinic.clinic.doctype.client_appointment_ct.client_appointment_ct.update_customer_lead_source",
+						args:{
+							client:frm.doc.client,
+							lead_source:frm.doc.lead_source,
+							appointment_id:frm.doc.name
+						}
+					})
+				}
 				frappe.db.get_value("Customer",cur_frm.doc.client,"id_no").then(
 			    (r)=>{
 					if(r.message.id_no == '' || r.message.id_no == '0000000000' || r.message.id_no == null )
@@ -1033,6 +1046,7 @@ var btn_attend = function (frm, status) {
 					else
 					{
 						frm.set_value("status",status)
+						frm.set_value("lead_source",frm.doc.lead_source)
 					}
 					
 						}

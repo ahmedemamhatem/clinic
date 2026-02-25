@@ -112,4 +112,40 @@ frappe.query_reports["Appointment Analytics"] = {
 			//console.log(report)
 		},
 
-}
+    formatter: function(value, row, column, data, default_formatter) {
+        value = default_formatter(value, row, column, data);
+        
+        // Check if this is the status column (lowercase fieldname from query)
+        if (column.fieldname == "status" && value) {
+            let status = value.toLowerCase().trim();
+            let color = "gray";
+
+            if (status == "attended" || status == "waiting attend") {
+                color = "#17a2b8"; // Teal/cyan color like in Client Appointment CT
+            }
+            else if (status == "waiting" || status.includes("انتظار")) {
+                color = "orange"; // Orange for waiting status
+            }
+            else if (status == "scheduled") {
+                color = "green";
+            }
+            else if (status == "cancelled") {
+                color = "red";
+            }
+            else if (status == "لم يحضر") {
+                color = "gray";
+            }
+
+            value = `<span style="
+                background:${color};
+                color:white;
+                padding:2px 8px;
+                border-radius:12px;
+                font-size:12px;
+                display:inline-block;
+            ">${value}</span>`;
+        }
+
+        return value;
+    }
+};
