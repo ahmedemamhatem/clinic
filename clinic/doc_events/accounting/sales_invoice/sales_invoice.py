@@ -4,6 +4,7 @@ from frappe import _
 @frappe.whitelist()
 def validate(doc, method=None):
     check_if_sales_order_created(doc)
+    validate_reference_invoice(doc)
 
 @frappe.whitelist()
 def before_insert(doc, method=None):
@@ -103,3 +104,7 @@ def get_customer_order_summary(customer):
             "total_orders": 0,
             "unbilled_amount": 0
         }
+
+def validate_reference_invoice(doc):
+    if doc.is_return and not doc.return_against:
+        frappe.throw(_("Return Invoice must have a reference to the original invoice."))
