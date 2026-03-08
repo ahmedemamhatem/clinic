@@ -226,26 +226,16 @@ class ClinicDashboard {
 	render_kpis(data) {
 		const summary = data.appointment_summary || {};
 		const rev = data.revenue_summary || {};
-		const ref = data.referral_stats || {};
-		const doctors = data.doctor_financial || [];
-
-		// compute average per appointment
-		let totalPaid = doctors.reduce((s, d) => s + (d.total_paid || 0), 0);
-		let totalAppt = doctors.reduce((s, d) => s + (d.appointment_count || 0), 0);
-		let avg = totalAppt > 0 ? (totalPaid / totalAppt) : 0;
 
 		const kpis = [
 			{ label: __('Total Appointments'), value: this.fmt_number(summary.total_appointments || 0), cls: 'blue' },
 			{
-				label: __('Total Revenue'), value: this.fmt_currency(rev.total_paid || 0), cls: 'green',
-				sub: __('Invoiced: ') + this.fmt_currency(rev.total_invoiced || 0)
+				label: __('Total Invoices'), value: this.fmt_currency(rev.total_invoiced || 0), cls: 'green',
+				sub: __('Count: ') + this.fmt_number(rev.total_invoice_count || 0)
 			},
+			{ label: __('Total Paid Amount'), value: this.fmt_currency(rev.total_paid || 0), cls: 'teal' },
 			{ label: __('Outstanding'), value: this.fmt_currency(rev.total_outstanding || 0), cls: 'red' },
-			{
-				label: __('Referrals'), value: this.fmt_number(ref.total_referrals || 0), cls: 'purple',
-				sub: __('Billed: ') + this.fmt_number(ref.billed_referrals || 0)
-			},
-			{ label: __('Avg / Appointment'), value: this.fmt_currency(avg), cls: 'amber' },
+			{ label: __('Schedule Payment'), value: this.fmt_currency(data.schedule_payment_total || 0), cls: 'amber' },
 		];
 
 		let html = kpis.map(k => `

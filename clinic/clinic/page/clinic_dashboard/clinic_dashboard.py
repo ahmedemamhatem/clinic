@@ -26,6 +26,7 @@ def get_dashboard_data(from_date=None, to_date=None, clinic=None, doctor=None, l
     revenue_summary = {
         "total_invoiced": 0, "total_paid": 0,
         "total_outstanding": 0, "total_discount": 0, "total_taxes": 0,
+        "total_invoice_count": 0,
     }
     revenue_by_clinic = []
     for r in revenue_rows:
@@ -34,6 +35,7 @@ def get_dashboard_data(from_date=None, to_date=None, clinic=None, doctor=None, l
         revenue_summary["total_outstanding"] += flt(r.total_outstanding)
         revenue_summary["total_discount"] += flt(r.total_discount)
         revenue_summary["total_taxes"] += flt(r.total_taxes)
+        revenue_summary["total_invoice_count"] += int(r.invoice_count or 0)
         revenue_by_clinic.append({
             "clinic": r.clinic,
             "total_invoiced": flt(r.total_invoiced),
@@ -47,6 +49,9 @@ def get_dashboard_data(from_date=None, to_date=None, clinic=None, doctor=None, l
     # ── Query 4: Doctor financial (single query) ────────────────────────
     doctor_financial = _get_doctor_financial(filters)
 
+    # ── Query 5: Schedule payment (Payment Entry) ─────────────────────
+    schedule_payment_total = _get_schedule_payment(filters)
+
     return {
         "appointment_summary": {"total_appointments": total_appointments},
         "appointments_by_status": appointments_by_status,
@@ -55,6 +60,7 @@ def get_dashboard_data(from_date=None, to_date=None, clinic=None, doctor=None, l
         "lead_source_performance": lead_source_performance,
         "referral_stats": referral_stats,
         "doctor_financial": doctor_financial,
+        "schedule_payment_total": schedule_payment_total,
     }
 
 
@@ -106,6 +112,7 @@ def _get_revenue_data(filters):
     return frappe.db.sql("""
         SELECT
             IFNULL(PA.clinic, 'Unknown') AS clinic,
+            COUNT(SI.name) AS invoice_count,
             COALESCE(SUM(SI.grand_total), 0) AS total_invoiced,
             COALESCE(SUM(SI.paid_amount), 0) AS total_paid,
             COALESCE(SUM(SI.outstanding_amount), 0) AS total_outstanding,
@@ -208,3 +215,23 @@ def _get_doctor_financial(filters):
         ORDER BY total_paid DESC
         LIMIT 15
     """.format(conds=conds), filters, as_dict=True)
+
+
+# ── 6. Schedule payment from Payment Entry ──────────────────────────────────
+
+def _get_schedule_payment(filters):
+    cond = ""
+    if filters.get("from_date"):
+        cond += " AND PE.posting_date >= %(from_date)s"
+    if filters.get("to_date"):
+        cond += " AND PE.posting_date <= %(to_date)s"
+
+    row = frappe.db.sql("""
+        SELECT
+            COALESCE(SUM(PE.paid_amount), 0) AS total_collected
+        FROM `tabPayment Entry` PE
+        WHERE PE.docstatus = 1
+          AND PE.payment_type = 'Receive'
+          {cond}
+    """.format(cond=cond), filters, as_dict=True)
+    return flt(row[0].total_collected) if row else 0

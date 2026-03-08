@@ -18,6 +18,7 @@
     --gradient-amber: linear-gradient(135deg, #f59e0b, #d97706);
     --gradient-red: linear-gradient(135deg, #ef4444, #dc2626);
     --gradient-purple: linear-gradient(135deg, #8b5cf6, #7c3aed);
+    --gradient-teal: linear-gradient(135deg, #14b8a6, #0d9488);
     --transition-fast: .2s ease;
 }
 
@@ -204,6 +205,10 @@
 
 .kpi-card.purple {
     background: var(--gradient-purple);
+}
+
+.kpi-card.teal {
+    background: var(--gradient-teal);
 }
 
 /* ── Chart Grid ─────────────────────────────────────────────────────────── */
