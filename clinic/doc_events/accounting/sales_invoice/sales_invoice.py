@@ -5,10 +5,23 @@ from frappe import _
 def validate(doc, method=None):
     check_if_sales_order_created(doc)
     validate_reference_invoice(doc)
+    get_doctor_name(doc)
 
 @frappe.whitelist()
 def before_insert(doc, method=None):
     set_invoice_naming_series(doc)
+
+def get_doctor_name(doc):
+    applicable_doctores = ["DOC0065","DOC0088","DOC0030","DOC0068","DOC0066","DOC0102","DOC0096","DOC0090","DOC0085","DOC0081","DOC0070","DOC0056","DOC0042","DOC0022","DOC0019","DOC0018"]
+    if doc.appointment:
+        doctor_data = frappe.db.get_value(
+            "Client Appointment CT",
+            {"name": doc.appointment},
+            ["physician","doctor_name"],
+            as_dict=True
+        )
+        if doctor_data.physician in applicable_doctores:
+            doc.doctor = doctor_data.doctor_name
 
 def set_invoice_naming_series(doc):
     """
