@@ -229,6 +229,7 @@ class ClinicDashboard {
 
 		const kpis = [
 			{ label: __('Total Appointments'), value: this.fmt_number(summary.total_appointments || 0), cls: 'blue' },
+			{ label: __('Unique Customers'), value: this.fmt_number(summary.unique_customers || 0), cls: 'purple' },
 			{
 				label: __('Total Invoices'), value: this.fmt_currency(rev.total_invoiced || 0), cls: 'green',
 				sub: __('Count: ') + this.fmt_number(rev.total_invoice_count || 0)

@@ -21,6 +21,9 @@ def get_dashboard_data(from_date=None, to_date=None, clinic=None, doctor=None, l
     appointments_by_status = _get_appointments_by_status(filters)
     total_appointments = sum(r.get("count", 0) for r in appointments_by_status)
 
+    # ── Query 1.1: Unique customers count ─────────────────────────────
+    unique_customers_count = _get_unique_customers_count(filters)
+
     # ── Query 2: Revenue summary + per-clinic breakdown (single query) ──
     revenue_rows = _get_revenue_data(filters)
     revenue_summary = {
@@ -53,7 +56,10 @@ def get_dashboard_data(from_date=None, to_date=None, clinic=None, doctor=None, l
     schedule_payment_total = _get_schedule_payment(filters)
 
     return {
-        "appointment_summary": {"total_appointments": total_appointments},
+        "appointment_summary": {
+            "total_appointments": total_appointments,
+             "unique_customers": unique_customers_count
+            },
         "appointments_by_status": appointments_by_status,
         "revenue_summary": revenue_summary,
         "revenue_by_clinic": revenue_by_clinic,
@@ -65,6 +71,18 @@ def get_dashboard_data(from_date=None, to_date=None, clinic=None, doctor=None, l
 
 
 # ── helpers ──────────────────────────────────────────────────────────────────
+
+def _get_unique_customers_count(filters):
+    """Get count of unique customers with appointments in the date range"""
+    conds = _appt_conds(filters, "PA")
+    
+    result = frappe.db.sql("""
+        SELECT COUNT(DISTINCT PA.client) AS unique_customers
+        FROM `tabClient Appointment CT` PA
+        WHERE PA.status != 'Cancelled' {conds}
+    """.format(conds=conds), filters, as_dict=True)
+    
+    return result[0].unique_customers if result else 0
 
 def _appt_conds(filters, alias="ca"):
     cond = ""
