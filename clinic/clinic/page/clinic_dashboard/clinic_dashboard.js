@@ -230,6 +230,7 @@ class ClinicDashboard {
 		const kpis = [
 			{ label: __('Total Appointments'), value: this.fmt_number(summary.total_appointments || 0), cls: 'blue' },
 			{ label: __('Unique Customers'), value: this.fmt_number(summary.unique_customers || 0), cls: 'purple' },
+				{ label: __('Attended Not Invoiced'), value: this.fmt_number(summary.attended_not_invoiced || 0), cls: 'indigo' },
 			{
 				label: __('Total Invoices'), value: this.fmt_currency(rev.total_invoiced || 0), cls: 'green',
 				sub: __('Count: ') + this.fmt_number(rev.total_invoice_count || 0)
@@ -286,21 +287,44 @@ class ClinicDashboard {
 		const colors = {
 			'Scheduled': '#3b82f6', 'Waiting': '#f59e0b',
 			'waiting attend': '#06b6d4', 'Attended': '#10b981',
+			'Cancelled': '#ef4444',
 			'Under Treatment': '#8b5cf6', 'To Bill': '#f97316',
 			'Billed': '#22c55e', 'Partial Billed': '#eab308',
 			'Retouch': '#6366f1',
 		};
 
-		this._make_chart('status', el, {
+		el.innerHTML = `
+			<div class="status-chart-host" id="status-chart-host"></div>
+			<div class="status-legend" id="status-legend"></div>
+		`;
+
+		const chartHost = el.querySelector('#status-chart-host');
+		const legendHost = el.querySelector('#status-legend');
+		if (!chartHost || !legendHost) return;
+
+		this._make_chart('status', chartHost, {
 			type: 'donut',
+			showLegend: 0,
 			data: {
 				labels: rows.map(r => r.status),
 				datasets: [{ values: rows.map(r => r.count) }]
 			},
 			colors: rows.map(r => colors[r.status] || '#94a3b8'),
 			height: 280,
-			maxSlices: 10,
 		});
+
+		legendHost.innerHTML = rows.map(r => {
+			const color = colors[r.status] || '#94a3b8';
+			return `
+				<div class="status-legend-item">
+					<span class="status-legend-dot" style="background:${color}"></span>
+					<div class="status-legend-text">
+						<div class="status-legend-label">${frappe.utils.escape_html(r.status || '')}</div>
+						<div class="status-legend-count">${this.fmt_number(r.count || 0)}</div>
+					</div>
+				</div>
+			`;
+		}).join('');
 	}
 
 	render_clinic_revenue_chart(rows) {

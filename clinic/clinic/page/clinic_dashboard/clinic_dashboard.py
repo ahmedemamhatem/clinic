@@ -20,6 +20,7 @@ def get_dashboard_data(from_date=None, to_date=None, clinic=None, doctor=None, l
     # ── Query 1: Appointments by status (also gives total) ──────────────
     appointments_by_status = _get_appointments_by_status(filters)
     total_appointments = sum(r.get("count", 0) for r in appointments_by_status)
+    attended_not_invoiced = _get_attended_not_invoiced_count(filters)
 
     # ── Query 1.1: Unique customers count ─────────────────────────────
     unique_customers_count = _get_unique_customers_count(filters)
@@ -58,7 +59,8 @@ def get_dashboard_data(from_date=None, to_date=None, clinic=None, doctor=None, l
     return {
         "appointment_summary": {
             "total_appointments": total_appointments,
-             "unique_customers": unique_customers_count
+             "unique_customers": unique_customers_count,
+             "attended_not_invoiced": attended_not_invoiced,
             },
         "appointments_by_status": appointments_by_status,
         "revenue_summary": revenue_summary,
@@ -115,10 +117,25 @@ def _get_appointments_by_status(filters):
     return frappe.db.sql("""
         SELECT PA.status AS status, COUNT(*) AS count
         FROM `tabClient Appointment CT` PA
-        WHERE PA.status != 'Cancelled' {conds}
+        WHERE PA.docstatus < 2 {conds}
         GROUP BY PA.status
         ORDER BY count DESC
     """.format(conds=conds), filters, as_dict=True)
+
+
+def _get_attended_not_invoiced_count(filters):
+    conds = _appt_conds(filters, "PA")
+    row = frappe.db.sql("""
+        SELECT COUNT(DISTINCT PA.name) AS attended_not_invoiced
+        FROM `tabClient Appointment CT` PA
+        LEFT JOIN `tabSales Invoice` SI
+            ON SI.appointment = PA.name AND SI.docstatus = 1
+        WHERE PA.status = 'Attended'
+          AND PA.docstatus < 2
+          AND SI.name IS NULL
+          {conds}
+    """.format(conds=conds), filters, as_dict=True)
+    return int(row[0].attended_not_invoiced or 0) if row else 0
 
 
 # ── 2. Revenue data: per-clinic with totals derived in Python ───────────────

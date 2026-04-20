@@ -19,6 +19,7 @@
     --gradient-red: linear-gradient(135deg, #ef4444, #dc2626);
     --gradient-purple: linear-gradient(135deg, #8b5cf6, #7c3aed);
     --gradient-teal: linear-gradient(135deg, #14b8a6, #0d9488);
+    --gradient-indigo: linear-gradient(135deg, #4f46e5, #4338ca);
     --transition-fast: .2s ease;
 }
 
@@ -135,10 +136,15 @@
 
 /* ── KPI Cards ──────────────────────────────────────────────────────────── */
 .kpi-grid {
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);
+    display: flex;
+    flex-wrap: nowrap;
     gap: 16px;
     margin-bottom: 28px;
+}
+
+.kpi-grid .kpi-card {
+    flex: 1 1 0;
+    min-width: 0;
 }
 
 .kpi-card {
@@ -209,6 +215,10 @@
 
 .kpi-card.teal {
     background: var(--gradient-teal);
+}
+
+.kpi-card.indigo {
+    background: var(--gradient-indigo);
 }
 
 /* ── Chart Grid ─────────────────────────────────────────────────────────── */
@@ -384,4 +394,51 @@
 .chart-card .frappe-chart .title,
 .chart-card .frappe-chart .sub-title {
     display: none;
+}
+
+/* Status donut legend: tighter spacing so all status counts fit */
+#chart-status .graph-stats-container {
+    display: none !important;
+}
+
+#chart-status .stats-wrapper,
+#chart-status .graph-stats,
+#chart-status .stats {
+    display: none !important;
+}
+
+#chart-status .status-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 12px;
+    align-items: flex-start;
+    margin-top: 8px;
+}
+
+#chart-status .status-legend-item {
+    display: inline-flex;
+    align-items: flex-start;
+    gap: 6px;
+    min-width: 92px;
+}
+
+#chart-status .status-legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 3px;
+    margin-top: 3px;
+    flex-shrink: 0;
+}
+
+#chart-status .status-legend-label {
+    font-size: 12px;
+    line-height: 1.1;
+    color: var(--text-primary);
+}
+
+#chart-status .status-legend-count {
+    font-size: 12px;
+    line-height: 1.1;
+    color: var(--text-secondary);
+    margin-top: 2px;
 }
