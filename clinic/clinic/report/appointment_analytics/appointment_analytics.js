@@ -113,39 +113,47 @@ frappe.query_reports["Appointment Analytics"] = {
 		},
 
     formatter: function(value, row, column, data, default_formatter) {
-        value = default_formatter(value, row, column, data);
-        
-        // Check if this is the status column (lowercase fieldname from query)
-        if (column.fieldname == "status" && value) {
-            let status = value.toLowerCase().trim();
-            let color = "gray";
+		value = default_formatter(value, row, column, data);
 
-            if (status == "attended" || status == "waiting attend") {
-                color = "#17a2b8"; // Teal/cyan color like in Client Appointment CT
-            }
-            else if (status == "waiting" || status.includes("انتظار")) {
-                color = "orange"; // Orange for waiting status
-            }
-            else if (status == "scheduled") {
-                color = "green";
-            }
-            else if (status == "cancelled") {
-                color = "red";
-            }
-            else if (status == "لم يحضر") {
-                color = "gray";
-            }
+		if (column.fieldname == "status" && value) {
+			const text = value.toLowerCase().trim();
 
-            value = `<span style="
-                background:${color};
-                color:white;
-                padding:2px 8px;
-                border-radius:12px;
-                font-size:12px;
-                display:inline-block;
-            ">${value}</span>`;
-        }
+			const STATUS_COLOR_MAP = {
+				'waiting attend': { bg: '#e83e8c', color: '#fff' },
+				'attended':       { bg: '#17a2b8', color: '#fff' },
+				'scheduled':      { bg: '#28a745', color: '#fff' },
+				'waiting':        { bg: '#fd7e14', color: '#fff' },
+				'cancelled':      { bg: '#dc3545', color: '#fff' },
+				'retouch':        { bg: '#6f42c1', color: '#fff' },
+				'في قائمة الانتظار': { bg: '#fd7e14', color: '#fff' },
+				'موعد مؤكد':         { bg: '#28a745', color: '#fff' },
+				'ألغيت':             { bg: '#dc3545', color: '#fff' },
+				"لم يحضر":             { bg: '#b5afb2', color: '#fff' },
+			};
 
-        return value;
-    }
+			// Sort longest-first so "waiting attend" matches before "waiting" or "attended"
+			const SORTED_KEYS = Object.keys(STATUS_COLOR_MAP).sort((a, b) => b.length - a.length);
+
+			let style = null;
+			for (const key of SORTED_KEYS) {
+				if (text === key || text.indexOf(key) !== -1) {
+					style = STATUS_COLOR_MAP[key];
+					break;
+				}
+			}
+
+			if (style) {
+				value = `<span style="
+					background:${style.bg};
+					color:${style.color};
+					padding:2px 8px;
+					border-radius:12px;
+					font-size:12px;
+					display:inline-block;
+				">${value}</span>`;
+			}
+		}
+
+		return value;
+		}
 };
