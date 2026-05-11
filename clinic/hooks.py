@@ -102,6 +102,9 @@ doc_events = {
 		"after_insert":"clinic.api.checkAvailability",
         "on_change": "clinic.clinic.doctype.appointment_forward.appointment_forward.update_billstatus"
 	},
+	"Customer":{
+		"before_save": "clinic.clinic.doctype.patient_progress_ct.patient_progress_ct.set_added_on_for_new_rows"
+	},
     "Sales Order":{
 		"before_validate":"clinic.doc_events.selling.sales_order.sales_order.before_validate"
 	},
@@ -145,6 +148,9 @@ scheduler_events = {
 		"0 11 * * *": [
 		"clinic.clinic.doctype.whatsapp_doc.whatsapp_doc.whatsapp_sched"
 
+		],
+		"0 * * * *": [
+			"clinic.clinic.common.customer_progress.archive_customer_progress_rows"
 		],
 		"*/5 * * * *": [
 			"clinic.clinic.doctype.client_appointment_ct.client_appointment_ct.auto_cancel_late_appointments"
